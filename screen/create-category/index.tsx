@@ -46,9 +46,11 @@
 // export default CreateCategory
 
 // const styles = StyleSheet.create({})
-import useGlobalStore from "@/store"
-import { getColors } from "@/utils/helpers"
-import { Box, Text, Theme } from "@/utils/theme"
+import useGlobalStore from "../../store"
+import { getColors } from "../../utils/helpers"
+// import { Box, Text, Theme } from "@/utils/theme"
+import { Theme } from "@react-navigation/native"
+import { Box, Text } from "../../utils/theme"
 import { Picker } from "@react-native-picker/picker"
 import { useNavigation } from "@react-navigation/native"
 import { useTheme } from "@shopify/restyle"
