@@ -29,6 +29,7 @@ const Category = ({ bottomSheetRef, category, index }: CategoryProps) => {
         borderRadius="roundedXl"
         flexDirection="row"
         alignItems="center"
+        style={selectedCategory?.id === category.id ? styles.shadowStyle : {}}
       >
         <FontAwesome name="square-o" size={24} color={category.color.code} />
         <Text variant="textXl" ml="4">
@@ -41,4 +42,12 @@ const Category = ({ bottomSheetRef, category, index }: CategoryProps) => {
 
 export default Category
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  shadowStyle: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+})

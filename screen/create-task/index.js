@@ -12,11 +12,11 @@ const CreateTask = () => {
   const navigation = useNavigation()
 
   const [newTask, setNewTask] = useState({
-    id: `task_${nanoid()}`,
-    name: "",
-    category_id: selectedCategory?.id ?? "",
-    completed: false,
-  })
+        id: `task_${nanoid()}`,
+        name: "",
+        category_id: selectedCategory?.id ?? "",
+        completed: false,
+      })
 
   const handleCreateTask = () => {
     addTask(newTask)
@@ -108,6 +108,7 @@ const CreateTask = () => {
           alignItems="center"
           style={{
             marginTop: "100%",
+            
           }}
         >
           <Pressable onPress={handleCreateTask}>
