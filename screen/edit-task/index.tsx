@@ -1,10 +1,8 @@
-import task from "@/components/task"
-import { RootStackParamList } from "@/navigation/types"
-import useGlobalStore from "@/store"
-import { Box, Text } from "@/utils/theme"
+import { RootStackParamList } from "../../naviagtion/types"
+import useGlobalStore from "../../store"
+import { Box, Text } from "../../utils/theme"
 import { Picker } from "@react-native-picker/picker"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
-import { nanoid } from "nanoid/non-secure"
 import React, { useState } from "react"
 import { Pressable, TextInput } from "react-native"
 

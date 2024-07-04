@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react"
+import { StyleSheet, Text, View } from "react-native"
 
 const Button = () => {
   return (
     <View>
-      <Text>Button </Text>
+      <Text>Button updates</Text>
     </View>
   )
 }

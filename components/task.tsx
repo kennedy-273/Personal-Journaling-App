@@ -1,10 +1,10 @@
 
-import { Box, Text, Theme } from "@/utils/theme"
+import { Box, Text, Theme } from "../utils/theme"
 import { useTheme } from "@shopify/restyle"
 import React from "react"
 import { Pressable, StyleSheet, View } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
-import useGlobalStore from "@/store"
+import useGlobalStore from "../store"
 import { useNavigation } from "@react-navigation/native"
 
 type TaskProps = {

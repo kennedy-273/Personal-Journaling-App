@@ -1,22 +1,22 @@
-import { Pressable, StyleSheet, View } from 'react-native'
+import { Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Text } from "../../utils/theme"
+import { Text, Box } from "../../utils/theme"
 import useGlobalStore from '../../store'
 import React, { useMemo, useRef } from "react"
-import { FlatList, Pressable, StyleSheet, View } from "react-native"
+import { FlatList,StyleSheet, View } from "react-native"
 import { BottomSheetModal } from "@gorhom/bottom-sheet"
-
 import {FontAwesome,Ionicons, MaterialCommunityIcons,} from "@expo/vector-icons"
-import Category from "@/components/category"
+import Category from "../../components/category"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import CreateTaskButton from "@/components/create-task-button"
-import Tasks from "@/components/tasks"
+import CreateTaskButton from "../../components/create-task-button"
+import Tasks from "../../components/tasks"
+
 
 const Home = () => {
   const navigation = useNavigation()
 
   const insets = useSafeAreaInsets()
-  const bottomSheetRef = useRef<BottomSheetModal>(null)
+  const bottomSheetRef = useRef(null)
 
   const snapPoints = useMemo(() => ["60%"], [])
 
