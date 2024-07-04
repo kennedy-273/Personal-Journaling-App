@@ -11,7 +11,7 @@ const CreateTask = () => {
   const { categories, selectedCategory, addTask } = useGlobalStore()
   const navigation = useNavigation()
 
-  const [newTask, setNewTask] = useState<ITask>({
+  const [newTask, setNewTask] = useState({
     id: `task_${nanoid()}`,
     name: "",
     category_id: selectedCategory?.id ?? "",
