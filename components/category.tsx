@@ -26,9 +26,15 @@ const Category = ({ bottomSheetRef, category, index }: CategoryProps) => {
         p="4"
         bg={selectedCategory?.id === category.id ? "blu200" : "gray100"}
         key={category.id}
-        borderRadius="roundedXl"
         flexDirection="row"
         alignItems="center"
+        borderTopLeftRadius={index === 0 ? 'roundedXl' : 'none'}
+        borderTopRightRadius={index === 0 ? 'roundedXl' : 'none'}
+        borderBottomLeftRadius={index === categories.length - 1 ? 'roundedXl' : 'none'}
+        borderBottomRightRadius={index === categories.length - 1 ? 'roundedXl' : 'none'}
+
+
+
         style={selectedCategory?.id === category.id ? styles.shadowStyle : {}}
       >
         <FontAwesome name="square-o" size={24} color={category.color.code} />

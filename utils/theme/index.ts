@@ -19,6 +19,7 @@ export const theme = createTheme({
     },
 
     borderRadii: {
+        none: 0,
         rounded: 4,
         roundedXl: 8,
         rounded2Xl: 16,

@@ -10,7 +10,11 @@ const Stack = createStackNavigator();
 
 const Navigation = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator  
+    screenOptions={{
+      headerShown: false,
+    
+    }}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="CreateTask" component={CreateTask} />
       <Stack.Screen name="EditTask" component={EditTask} />

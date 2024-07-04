@@ -8,13 +8,15 @@ import { useTheme } from "@shopify/restyle"
 import { nanoid } from "nanoid/non-secure"
 import React, { useState, useEffect } from "react"
 import { Pressable, TextInput } from "react-native"
+import SafeAreaWrapper from "../../components/safe-are-wrapper"
+import NavigateBack from "../../components/navigate-back"
 
 const COLORS = getColors()
 
 const CreateCategory = () => {
   const navigation = useNavigation()
 
-  const [newCategory, setNewCategory] = useState({
+  const [newCategory,  setNewCategory] = useState({
     name: "",
     id: `category_${nanoid()}`,
     color: {
@@ -24,7 +26,7 @@ const CreateCategory = () => {
     },
   })
 
-  const { addCategory } = useGlobalStore()
+  const { addCategory, categories,updateSelectedCategory } = useGlobalStore()
 
   const theme = useTheme<Theme>()
 
@@ -48,16 +50,26 @@ const CreateCategory = () => {
       },
     })
 
-    navigation.navigate("Home")
+      const currentCategory = categories.find(
+        (categoryItem) => categoryItem.id === newCategory.id
+      )
+      if (currentCategory) {
+        updateSelectedCategory(newCategory)
+        navigation.navigate("Home")
+      }
+    
   }
 
   return (
-    <Box flex={1} bg="gray200" pb="10">
+    <SafeAreaWrapper>
+    <Box flex={1} bg="gray200" p="4" pb="10">
+    <NavigateBack />
+    <Box height={20} />
       <Box
         flex={1}
         flexDirection="column"
         justifyContent="space-between"
-        mx="3"
+        
       >
         <Box flexDirection="column" width={"100%"}>
           <Box bg="white" borderRadius="rounded2Xl" mt="5">
@@ -120,6 +132,7 @@ const CreateCategory = () => {
         </Pressable>
       </Box>
     </Box>
+    </SafeAreaWrapper>
   )
 }
 

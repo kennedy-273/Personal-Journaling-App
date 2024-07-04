@@ -4,11 +4,12 @@ import { Picker } from "@react-native-picker/picker"
 import { useNavigation } from "@react-navigation/native"
 import { nanoid } from "nanoid/non-secure"
 import React, { useState, useEffect } from "react"
-
 import { Pressable, StyleSheet, TextInput, View } from "react-native"
+import SafeAreaWrapper from "../../components/safe-are-wrapper"
+import NavigateBack from "../../components/navigate-back"
 
 const CreateTask = () => {
-  const { categories, selectedCategory, addTask } = useGlobalStore()
+  const { categories, selectedCategory, addTask , updateSelectedCategory} = useGlobalStore()
   const navigation = useNavigation()
 
   const [newTask, setNewTask] = useState({
@@ -20,11 +21,19 @@ const CreateTask = () => {
 
   const handleCreateTask = () => {
     addTask(newTask)
-    navigation.navigate("Home")
+    const currentCategory = categories.find(categoryItem => categoryItem.id === newTask.category_id)
+
+    if (currentCategory) {
+      updateSelectedCategory(currentCategory)
+      navigation.navigate("Home")
+    }    
   }
 
   return (
+    <SafeAreaWrapper>
     <Box flex={1} bg="gray100" p="4" pb="10">
+    <NavigateBack />
+      <Box height={20} />
       <Box
         flexDirection="column"
         alignItems="center"
@@ -107,7 +116,7 @@ const CreateTask = () => {
           p="4"
           alignItems="center"
           style={{
-            marginTop: "100%",
+            marginTop: "120%",
             
           }}
         >
@@ -119,6 +128,7 @@ const CreateTask = () => {
         </Box>
       </Box>
     </Box>
+    </SafeAreaWrapper>
   )
 }
 

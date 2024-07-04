@@ -10,6 +10,7 @@ import Category from "../../components/category"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import CreateTaskButton from "../../components/create-task-button"
 import Tasks from "../../components/tasks"
+import SafeAreaWrapper from "../../components/safe-are-wrapper"
 
 
 const Home = () => {
@@ -24,6 +25,7 @@ const Home = () => {
     useGlobalStore()
 
   return (
+    <SafeAreaWrapper>
     <Box flex={1} bg="gray100">
       <Box
         flexDirection="row"
@@ -88,6 +90,7 @@ const Home = () => {
       </BottomSheetModal>
       <CreateTaskButton />
     </Box>
+    </SafeAreaWrapper>
   )
 }
 

@@ -5,11 +5,13 @@ import { Picker } from "@react-native-picker/picker"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import React, { useState } from "react"
 import { Pressable, TextInput } from "react-native"
+import SafeAreaWrapper from "../../components/safe-are-wrapper"
+import NavigateBack from "../../components/navigate-back"
 
 type EditTaskRoute = RouteProp<RootStackParamList, "EditTask">
 
 const EditTask = () => {
-  const { categories, updateTasks, tasks } = useGlobalStore()
+  const { categories, updateTasks, tasks, updateSelectedCategory } = useGlobalStore()
   const navigation = useNavigation()
 
   const { params } = useRoute<EditTaskRoute>()
@@ -34,11 +36,22 @@ const EditTask = () => {
   const handleDeleteTask = () => {
     const updatedTasks = tasks.filter((taskItem) => taskItem.id !== newTask.id)
     updateTasks(updatedTasks)
+    const currentCategory = categories.find(categoryItem => categoryItem.id === newTask.category_id)
+    
+    if (currentCategory) {
+      updateSelectedCategory(currentCategory)
     navigation.navigate("Home")
+
+    }
+    
   }
 
   return (
+    <SafeAreaWrapper>
     <Box flex={1} bg="gray100" p="4" pb="10">
+      <NavigateBack />
+      <Box height={20} />
+
       <Box
         flexDirection="column"
         alignItems="center"
@@ -149,6 +162,7 @@ const EditTask = () => {
         </Box>
       </Box>
     </Box>
+    </SafeAreaWrapper>
   )
 }
 
