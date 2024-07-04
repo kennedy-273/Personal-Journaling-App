@@ -11,12 +11,12 @@ const CreateTask = () => {
   const { categories, selectedCategory, addTask } = useGlobalStore()
   const navigation = useNavigation()
 
-  const [newTask, setNewTask] = useState({
-        id: `task_${nanoid()}`,
-        name: "",
-        category_id: selectedCategory?.id ?? "",
-        completed: false,
-      })
+  const [newTask, setNewTask] = useState<ITask>({
+    id: `task_${nanoid()}`,
+    name: "",
+    category_id: selectedCategory?.id ?? "",
+    completed: false,
+  })
 
   const handleCreateTask = () => {
     addTask(newTask)
@@ -107,8 +107,7 @@ const CreateTask = () => {
           p="4"
           alignItems="center"
           style={{
-            marginTop: "150%",
-            
+            marginTop: "100%",
           }}
         >
           <Pressable onPress={handleCreateTask}>

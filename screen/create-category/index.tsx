@@ -9,12 +9,13 @@ import { nanoid } from "nanoid/non-secure"
 import React, { useState, useEffect } from "react"
 import { Pressable, TextInput } from "react-native"
 
+
 const COLORS = getColors()
 
 const CreateCategory = () => {
   const navigation = useNavigation()
 
-  const [newCategory, setNewCategory] = useState({
+  const [newCategory, setNewCategory] = useState<ICategory>({
     name: "",
     id: `category_${nanoid()}`,
     color: {
@@ -27,13 +28,6 @@ const CreateCategory = () => {
   const { addCategory } = useGlobalStore()
 
   const theme = useTheme<Theme>()
-
-  useEffect(() => {
-    setNewCategory((prev) => ({
-      ...prev,
-      id: `category_${nanoid()}`,
-    }))
-  }, [])
 
   const handleCreateCategory = () => {
     addCategory(newCategory)
@@ -62,13 +56,15 @@ const CreateCategory = () => {
         <Box flexDirection="column" width={"100%"}>
           <Box bg="white" borderRadius="rounded2Xl" mt="5">
             <TextInput
-              placeholder="Create new category"
+              placeholder="Create new task"
               value={newCategory.name}
               onChangeText={(text) => {
-                setNewCategory((prev) => ({
-                  ...prev,
-                  name: text,
-                }))
+                setNewCategory((prev) => {
+                  return {
+                    ...prev,
+                    name: text,
+                  }
+                })
               }}
               style={{
                 padding: 16,
@@ -85,12 +81,14 @@ const CreateCategory = () => {
                 (color) => color.id === itemValue
               )
               if (currentColor) {
-                setNewCategory((prev) => ({
-                  ...prev,
-                  color: currentColor,
-                }))
+                setNewCategory((prev) => {
+                  return {
+                    ...prev,
+                    color: currentColor,
+                  }
+                })
               } else {
-                console.log("Color not found")
+                console.log("within else")
               }
             }}
             style={{
@@ -98,17 +96,19 @@ const CreateCategory = () => {
               borderRadius: 16,
             }}
           >
-            {COLORS.map((colorItem) => (
-              <Picker.Item
-                key={colorItem.id}
-                label={colorItem.name}
-                value={colorItem.id}
-                style={{
-                  borderWidth: 2,
-                  borderRadius: 40,
-                }}
-              />
-            ))}
+            {COLORS.map((colorItem) => {
+              return (
+                <Picker.Item
+                  style={{
+                    borderWidth: 2,
+                    borderRadius: 40,
+                  }}
+                  key={colorItem.id}
+                  label={colorItem.name}
+                  value={colorItem.id}
+                />
+              )
+            })}
           </Picker>
         </Box>
         <Pressable onPress={handleCreateCategory}>
