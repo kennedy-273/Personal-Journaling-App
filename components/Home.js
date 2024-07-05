@@ -68,7 +68,7 @@ const Home = ({navigation}) => {
             textAlign: 'center',
             fontFamily: 'SpaceMono_400Regular_Italic'
           }}>
-            {randomQuote.q ? `"${randomQuote.q}"` : 'Loading...'}
+            {randomQuote.q ? `"${randomQuote.q}"` : 'Welcome...'}
         </Text>
         <Text style={{
           textAlign: 'center',
