@@ -30,6 +30,11 @@ const JournalEntry = ({navigation}) => {
     name: 'grin-alt',
     color: colors.mint
   });
+
+  const [newEntryCategory, setNewEntryCategory] = useState('');
+
+  
+
   const [newEntryText, setNewEntryText] = useState('');
   const [newEntryImage, setNewEntryImage] = useState([]);
  
@@ -154,11 +159,11 @@ const JournalEntry = ({navigation}) => {
           </View>
         </View>
       </Modal>
-      <View style={styles.text}>
+      <View style={{ flexDirection: 'column' }}>
         <Icon 
           style={{marginLeft:2.5, marginRight:5}} 
           color={colors.midnightBlue}
-          name='pencil' 
+          // name='pencil' 
           type='font-awesome' />
         <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Title:</Text>
         <TextInput
@@ -170,6 +175,24 @@ const JournalEntry = ({navigation}) => {
           placeholder='Your Title'
           autoCapitalize='words'
         />
+        
+        <Icon 
+          style={{marginLeft:2.5, marginBottom:5, marginRight:5}} 
+          color={colors.midnightBlue}
+          // name='pencil' 
+          type='font-awesome' />
+        <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Category:</Text>
+        <TextInput
+          style={styles.title}
+          onChangeText={title => setNewEntryCategory(title)}
+          // onChangeText={title => }
+          defaultValue={newEntryCategory}
+          value={newEntryCategory}
+          placeholder='Your Category'
+          autoCapitalize='words'
+        />
+
+
       </View>
       <View style={{margin:10}}>
         <TextInput 
@@ -185,42 +208,7 @@ const JournalEntry = ({navigation}) => {
           placeholder='Add your journal entry here!'
         /> 
       </View>
-      <View style={{marginBottom:5}}>
-        {newEntryImage && 
-          newEntryImage.map(image => 
-            <Image 
-              key={image}
-              source={{ uri: image }}
-              style={{ 
-                width: 360, 
-                height: 270,
-                marginBottom: 10,
-                alignSelf:'center'
-              }}
-              resizeMode='cover' 
-            />  
-          )
-        }
-      </View>
-      <Button
-        title="Image"
-        icon={{
-          name: 'camera',
-          type: 'ionicons',
-          size: 30,
-          color: '#FFF8F3',
-          paddingRight: 5
-        }}
-        loading={false}
-        loadingProps={{ size: 'small', color: 'white' }}
-        buttonStyle={{backgroundColor:colors.turquoise,borderRadius:40,paddingBottom:14}}
-        titleStyle={{fontSize:18,fontFamily:fonts.Anton,letterSpacing:1.5}}
-        containerStyle={{
-          height: 80,
-          width: '100%'
-        }}
-        onPress={() => setImageModal(true)}
-      />
+      
       <Modal
         transparent={true}
         animationType='fade'
@@ -231,54 +219,9 @@ const JournalEntry = ({navigation}) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={{alignSelf:'flex-end'}}>
-              <TouchableOpacity
-                onPress={() => {
-                  setImageModal(!imageModal);
-                }} >
-                <Icon
-                  style={{margin:-5,padding:-10}}
-                  name='close'
-                  type='ionicons'
-                  size={30}
-                />
-              </TouchableOpacity>
-            </View>
+            
             <View style={{margin:15,paddingBottom:10,display:'flex',flexDirection:'row',width:'85%',justifyContent:'space-between'}}>
-              <Button
-                icon={{
-                  name:'camera',
-                  type:'feather',
-                  size:100,
-                  color:'white'
-                }}
-                containerStyle={{
-                  height: 130,
-                  width: 130,
-                  
-                }}
-                buttonStyle={{
-                  backgroundColor:colors.turquoise
-                }}
-                onPress={pickCameraImage}
-                style={{paddingLeft: 10}}
-              />
-              <Button
-                icon={{
-                  name:'image',
-                  type:'feather',
-                  size:100,
-                  color:'white'
-                }}
-                containerStyle={{
-                  height: 130,
-                  width: 130,
-                }}
-                buttonStyle={{
-                  backgroundColor:colors.turquoise
-                }}
-                onPress={pickGalleryImage}
-              />
+              
             </View>
           </View>  
         </View>

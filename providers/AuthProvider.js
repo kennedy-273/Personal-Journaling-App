@@ -1,39 +1,74 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
+import app from "../RealmApp";
 
 // Create a new Context object that will be provided to descendants of
 // the AuthProvider.
 const AuthContext = React.createContext(null);
 
+// The AuthProvider is responsible for user management and provides the
+// AuthContext value to its descendants. Components under an AuthProvider can
+// use the useAuth() hook to access the auth value.
 const AuthProvider = ({ children }) => {
-  // Simulate a user object
-  const simulatedUser = { id: "simulatedUser", name: "Simulated User" };
-  
-  const [user, setUser] = useState(simulatedUser); // Set to simulatedUser by default for bypass
+  const [user, setUser] = useState(app.currentUser);
   const realmRef = useRef(null);
 
   useEffect(() => {
-    // Bypass the actual Realm operations
-    console.log("Bypassing Realm operations for development/testing");
+    if (!user) {
+      console.warn("NO USER Logged In");
+      return;
+    }
+
+    const config = {
+      sync: {
+        user,
+        partitionValue: `user=${user.id}`,
+      },
+    };
+
+    // Open a realm with the logged in user's partition value in order
+    // to get the links that the logged in user added
+    // (instead of all the links stored for all the users)
+    Realm.open(config).then((userRealm) => {
+      realmRef.current = userRealm;
+    });
 
     return () => {
-      // Bypass cleanup
-      console.log("Bypassing cleanup");
+      // cleanup function
+      const userRealm = realmRef.current;
+      if (userRealm) {
+        userRealm.close();
+        realmRef.current = null;
+      }
     };
   }, [user]);
 
+  // The signIn function takes an email and password and uses the
+  // emailPassword authentication provider to log in.
+  // This authentication method should be set up correctly on the MongoDB Realm App 
+  // see: https://docs.mongodb.com/realm/authentication/providers/
   const signIn = async (email, password) => {
-    console.log(`Simulating sign-in for ${email}`);
-    setUser(simulatedUser); // Set user to simulatedUser on sign-in
+    const creds = Realm.Credentials.emailPassword(email, password);
+    const newUser = await app.logIn(creds);
+    setUser(newUser);
   };
 
+  // The signUp function takes an email and password and uses the
+  // emailPassword authentication provider to register the user.
+  // This authentication should be set up correctly on the MongoDB Realm App 
+  // see: https://docs.mongodb.com/realm/authentication/providers/
   const signUp = async (email, password) => {
-    console.log(`Simulating sign-up for ${email}`);
-    // No need to change user state here, assuming sign-up is followed by sign-in
+    await app.emailPasswordAuth.registerUser({ email, password });
   };
 
+  // The signOut function calls the logOut function on the currently
+  // logged in user
   const signOut = () => {
-    console.log("Simulating sign-out");
-    setUser(null); // Set user to null on sign-out
+    if (user == null) {
+      console.warn("Not logged in, can't log out!");
+      return;
+    }
+    user.logOut();
+    setUser(null);
   };
 
   return (
@@ -50,6 +85,8 @@ const AuthProvider = ({ children }) => {
   );
 };
 
+// The useAuth hook can be used by components under an AuthProvider to
+// access the auth context value.
 const useAuth = () => {
   const auth = useContext(AuthContext);
   if (auth == null) {

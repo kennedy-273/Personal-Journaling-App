@@ -1,128 +1,52 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Text, TextInput, Alert } from 'react-native';
-import { Button } from 'react-native-elements';
-import { useAuth } from "../providers/AuthProvider";
-// import styles from "../stylesheet";
+import React, { useState } from 'react';
 
-const Login = () => {
+function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { user, signUp, signIn } = useAuth();
-
-  useEffect(() => {
-    // If there is a user logged in, go to the Projects page.
-    if (user != null) {
-      navigation.navigate('Home');
-    }
-  }, [user]);
-
-  // The onPressSignIn method calls AuthProvider.signIn with the email/password in state.
-  const onPressSignIn = async () => {
-    console.log('Trying sign in with user: ' + email);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Example: Authenticate user
     try {
-      await signIn(email, password);
-    } catch (err) {
-      const errMess = `Failed to sign in: ${err.message}`;
-      console.error(errMess);
-      Alert.alert(errMess);
+      const response = await fetch('https://yourapi.com/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      if (!response.ok) throw new Error('Login failed');
+      const data = await response.json();
+      // Handle successful login here (e.g., save token, redirect)
+      console.log('Login successful:', data);
+    } catch (error) {
+      setError('Invalid username or password');
     }
   };
-
-  // The onPressSignUp method calls AuthProvider.signUp with the email/password in state and then signs in.
-  const onPressSignUp = async () => {
-    console.log('Trying signup with user: ' + email);
-    try {
-      await signUp(email, password);
-      signIn(email, password);
-    } catch (err) {
-      const errMess = `Failed to sign up: ${err.message}`;
-      console.error(errMess);
-      Alert.alert(errMess);
-    }
-  };
-
 
   return (
-    <View style={styles.container}>
-      <Text>Signup or Signin:</Text>
-      <View>
-        <TextInput
-          style={{ 
-            backgroundColor: '#FFF', 
-            marginTop: 20,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            borderRadius: 5,
-            width: 250,
-            textAlign: 'center'
-          }}
-          onChangeText={setEmail}
-          value={email}
-          placeholder={email}       
-          autoCapitalize="none"
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Username:</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
-      </View>
-      <View>
-        <TextInput
-          style={{ 
-            backgroundColor: '#FFF', 
-            marginTop: 20,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            borderRadius: 5,
-            width: 250,
-            textAlign: 'center'
-          }}    
-          onChangeText={text => setPassword(text)}
-          value={password}     
-          placeholder="password"
-          secureTextEntry
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-      </View>
-      <Button 
-        title="Sign In" 
-        buttonStyle={{
-          backgroundColor: 'rgba(111, 202, 186, 1)',
-          borderRadius: 5,
-        }}
-        titleStyle={{ fontWeight:'bold', fontSize:18 }}
-        containerStyle={{
-          height: 60,
-          width: 150,
-          marginTop: 20
-        }}
-        onPress={onPressSignIn}
-      />
-      <Button 
-        title="Sign Up" 
-        buttonStyle={{
-          backgroundColor: 'rgba(111, 202, 186, 1)',
-          borderRadius: 5,
-        }}
-        titleStyle={{ fontWeight:'bold', fontSize:18 }}
-        containerStyle={{
-          height: 60,
-          width: 150,
-          marginTop: 10
-        }}
-        onPress={onPressSignUp}
-      />
-    </View>
+      </div>
+      {error && <p>{error}</p>}
+      <button type="submit">Log In</button>
+    </form>
   );
 }
 
 export default Login;
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#C1F8CF',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
-
