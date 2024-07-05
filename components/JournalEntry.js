@@ -3,6 +3,7 @@ import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, Imag
 import { Icon, Button, Card } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 // import * as SecureStore from 'expo-secure-store';
+// import JournalApp from '../components/journalApp';
 
 // Set up Date:
 const dateObj = new Date();
@@ -101,6 +102,8 @@ const JournalEntry = ({navigation}) => {
 
   return (
     <ScrollView style={styles.container}>
+   
+
       <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
         <View>
           <Text style={{fontFamily:fonts.BioRhyme,color:colors.midnightBlue,fontSize:18}}>{date}</Text>
