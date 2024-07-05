@@ -1,5 +1,5 @@
 import React, { useState,  useEffect } from 'react';
-import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, Image, StyleSheet, } from 'react-native';
+import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, Image, StyleSheet,Picker} from 'react-native';
 import { Icon, Button, Card } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 // import * as SecureStore from 'expo-secure-store';
@@ -177,22 +177,26 @@ const JournalEntry = ({navigation}) => {
           autoCapitalize='words'
         />
         
+        
         <Icon 
           style={{marginLeft:2.5, marginBottom:5, marginRight:5}} 
           color={colors.midnightBlue}
           type='font-awesome' />
         <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Category:</Text>
-        <TextInput
-          style={styles.title}
-          onChangeText={title => setNewEntryCategory(title)}
-          defaultValue={newEntryCategory}
-          value={newEntryCategory}
-          placeholder='Your Category'
-          autoCapitalize='words'
-        />
-
-
+        <Picker
+          selectedValue={newEntryCategory}
+          style={{ height: 50, width: 200 }}
+          onValueChange={(itemValue, itemIndex) =>
+            setNewEntryCategory(itemValue)
+          }>
+          <Picker.Item label="Select Category..." value="" />
+          <Picker.Item label="Work" value="Work" />
+          <Picker.Item label="Personal" value="Personal" />
+          <Picker.Item label="Travel" value="Travel" />
+          {/* Add more categories as needed */}
+        </Picker>
       </View>
+
       <View style={{margin:10}}>
         <TextInput 
           style={styles.textarea}
