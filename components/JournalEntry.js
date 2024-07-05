@@ -163,13 +163,11 @@ const JournalEntry = ({navigation}) => {
         <Icon 
           style={{marginLeft:2.5, marginRight:5}} 
           color={colors.midnightBlue}
-          // name='pencil' 
           type='font-awesome' />
         <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Title:</Text>
         <TextInput
           style={styles.title}
           onChangeText={title => setNewEntryTitle(title)}
-          // onChangeText={title => }
           defaultValue={newEntryTitle}
           value={newEntryTitle}
           placeholder='Your Title'
@@ -179,13 +177,11 @@ const JournalEntry = ({navigation}) => {
         <Icon 
           style={{marginLeft:2.5, marginBottom:5, marginRight:5}} 
           color={colors.midnightBlue}
-          // name='pencil' 
           type='font-awesome' />
         <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Category:</Text>
         <TextInput
           style={styles.title}
           onChangeText={title => setNewEntryCategory(title)}
-          // onChangeText={title => }
           defaultValue={newEntryCategory}
           value={newEntryCategory}
           placeholder='Your Category'

@@ -1,52 +1,115 @@
 import React, { useState } from 'react';
 
-function Login() {
-  const [username, setUsername] = useState('');
+const Login = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and signup
   const [error, setError] = useState('');
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    // Example: Authenticate user
-    try {
-      const response = await fetch('https://yourapi.com/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!response.ok) throw new Error('Login failed');
-      const data = await response.json();
-      // Handle successful login here (e.g., save token, redirect)
-      console.log('Login successful:', data);
-    } catch (error) {
-      setError('Invalid username or password');
+    if (isLogin) {
+      // Login logic here
+      console.log('Logging in with', email, password);
+    } else {
+      // Signup logic here
+      console.log('Signing up with', email, password);
     }
+    // Example error handling
+    setError('An error occurred. Please try again.');
+  };
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setError(''); // Clear error when toggling
+  };
+
+  // Styles object
+  const styles = {
+    header: {
+      marginBottom: '20px',
+      fontWeight: 700,
+    },
+    form: {
+      backgroundColor: '#ffffff',
+      padding: '20px 40px',
+      borderRadius: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      maxWidth: '400px',
+      width: '100%',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    inputContainer: {
+      marginBottom: '15px',
+    },
+    label: {
+      marginBottom: '5px',
+      fontWeight: 500,
+      textAlign: 'left',
+      display: 'block',
+    },
+    input: {
+      padding: '10px',
+      border: '1px solid #ddd',
+      borderRadius: '5px',
+      width: '100%',
+    },
+    button: {
+      padding: '10px',
+      backgroundColor: '#007bff',
+      color: '#ffffff',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      marginTop: '10px',
+    },
+    toggleButton: {
+      backgroundColor: 'transparent',
+      color: '#007bff',
+      border: 'none',
+      cursor: 'pointer',
+      marginTop: '10px',
+    },
+    error: {
+      color: 'red',
+      marginTop: '10px',
+    },
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      {error && <p>{error}</p>}
-      <button type="submit">Log In</button>
-    </form>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <h2 style={styles.header}>{isLogin ? 'Login' : 'Signup'}</h2>
+        <div style={styles.inputContainer}>
+          <label style={styles.label} htmlFor="email">Email</label>
+          <input
+            style={styles.input}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div style={styles.inputContainer}>
+          <label style={styles.label} htmlFor="password">Password</label>
+          <input
+            style={styles.input}
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {error && <div style={styles.error}>{error}</div>}
+        <button style={styles.button} type="submit">{isLogin ? 'Login' : 'Signup'}</button>
+        <button style={styles.toggleButton} type="button" onClick={toggleForm}>
+          {isLogin ? 'Need an account? Signup' : 'Have an account? Login'}
+        </button>
+      </form>
+    </div>
   );
-}
+};
 
 export default Login;
