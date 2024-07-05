@@ -29,6 +29,7 @@ const Login = () => {
     header: {
       marginBottom: '20px',
       fontWeight: 700,
+      
     },
     form: {
       backgroundColor: '#ffffff',
@@ -79,7 +80,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',backgroundColor: 'rgba(111, 202, 186, 1)', height: '100vh' }}>
       <form style={styles.form} onSubmit={handleSubmit}>
         <h2 style={styles.header}>{isLogin ? 'Login' : 'Signup'}</h2>
         <div style={styles.inputContainer}>
