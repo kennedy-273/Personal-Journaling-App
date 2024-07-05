@@ -432,31 +432,21 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    width:'92%',
-    maxHeight:'75%',
-    margin:15,
-    backgroundColor:'#FFF',
-    shadowColor:'#3E4985',
-    shadowRadius:10,
-    shadowOffset:10,
-    borderRadius:10,
-    padding:20,
-    alignItems:'center',
-    shadowColor:'#000',
-    shadowOffset: {
-      width:0,
-      height:2
-    },
-    shadowOpacity:0.25,
-    shadowRadius:4,
-    elevation:5
-  },
-  moodsContainer: {
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-around',
-    width:'100%',
-    paddingVertical:30
+  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+  borderRadius: 10,
+  padding: 20,
+  alignItems: 'center',
+  margin: 15,
+  backgroundColor: '#FFF',
+  width: '92%',
+  maxHeight: '75%',
+},
+moodsContainer: {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  width: '100%',
+  paddingVertical: 30,
   }
 });
 

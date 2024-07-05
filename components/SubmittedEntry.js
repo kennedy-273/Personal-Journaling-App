@@ -7,7 +7,6 @@ import { Card, Icon } from 'react-native-elements';
 const SubmittedEntry = (props) => {
   // console.log(`Props: ${props}`)
 
-  // Finally got this to work! Before I was trying to check if allEntries.route.params was undefined, but since this variable is only initialzed when the event happens, it wasn't even reading that variable. Of course, it had to look at the props for it to evaluate this!
   console.log('my journal rendered')
 
   if (props.route.params === undefined) {
