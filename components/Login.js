@@ -1,145 +1,136 @@
-import React, { useState } from 'react';
+import React from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and signup
-  const [error, setError] = useState('');
+const Login = ({ navigation }) => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  // Backend URLs
-  const loginUrl = 'http://127.0.0.1:5500/signin';
-  const signupUrl = 'http://127.0.0.1:5500/signup';
+  // const handleLogin = async () => {
+  //   try {
+  //     const response = await axios.post("http://127.0.0.1:5500/signin", {
+  //       email,
+  //       password,
+  //     });
+  //     console.log(response);
+  //     await AsyncStorage.setItem("token", response.data.token);
+  //     navigation.navigate("Home");
+  //   } catch (error) {
+  //     console.log(">>>>", error.response.data);
+  //     console.log(error);
+  //   }
+  // };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleLogin = async () => {
     try {
-      const response = await fetch(isLogin ? loginUrl : signupUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, username }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Success:' ,data);
-        // Handle successful login/signup here
-      } else {
-        throw new Error(data.message || 'Something went wrong');
-      }
+      const response = await axios.post(
+        "https://journal-backend-x445.onrender.com/signin",
+        {
+          email,
+          password,
+        }
+      );
+      console.log(response);
+      await AsyncStorage.setItem("token", response.data.access_token);
+      navigation.navigate("Home");
     } catch (error) {
-      setError(error.message);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(">>>>", error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(">>>> Request made, no response:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log(">>>> Error", error.message);
+      }
+      console.log(error.config);
     }
   };
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-    setError(''); // Clear error when toggling
-  };
-
-  // Styles object
-  const styles = {
-    container: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(111, 202, 186, 1)',
-      height: '100vh',
-    },
-    form: {
-      backgroundColor: '#ffffff',
-      padding: '20px 40px',
-      borderRadius: '10px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      maxWidth: '400px',
-      width: '100%',
-      textAlign: 'center',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    header: {
-      marginBottom: '20px',
-      fontWeight: 700,
-    },
-    inputContainer: {
-      marginBottom: '15px',
-    },
-    label: {
-      marginBottom: '5px',
-      fontWeight: 500,
-      textAlign: 'left',
-      display: 'block',
-    },
-    input: {
-      padding: '10px',
-      border: '1px solid #ddd',
-      borderRadius: '5px',
-      width: '100%',
-    },
-    button: {
-      padding: '10px',
-      backgroundColor: '#007bff',
-      color: '#ffffff',
-      border: 'none',
-      borderRadius: '5px',
-      cursor: 'pointer',
-      marginTop: '10px',
-    },
-    toggleButton: {
-      backgroundColor: 'transparent',
-      color: '#007bff',
-      border: 'none',
-      cursor: 'pointer',
-      marginTop: '10px',
-    },
-    error: {
-      color: 'red',
-      marginTop: '10px',
-    },
-  };
-
   return (
-    <div style={styles.container}>
-      <form style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.header}>{isLogin ? 'Login' : 'Signup'}</h2>
-        <div style={styles.inputContainer}>
-          <label style={styles.label} htmlFor="email">Email</label>
-          <input
-            style={styles.input}
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+      <View style={{ paddingHorizontal: 25 }}>
+        <View style={{ alignItems: "center" }}>
+          <Text
+            style={{
+              fontFamily: "Roboto-Medium",
+              fontSize: 28,
+              fontWeight: "500",
+              color: "#333",
+              marginBottom: 30,
+            }}
+          >
+            Login
+          </Text>
+
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "#ddd",
+              borderRadius: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              marginBottom: 20,
+            }}
+            placeholder="Email"
+            keyboardType="email-address"
+            onChangeText={setEmail}
           />
-        </div>
-        <div style={styles.inputContainer}>
-          <label style={styles.label} htmlFor="password">Password</label>
-          <input
-            style={styles.input}
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+
+          <TextInput
+            style={{
+              borderWidth: 1,
+              borderColor: "#ddd",
+              borderRadius: 10,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              marginBottom: 20,
+            }}
+            placeholder="Password"
+            secureTextEntry={true}
+            onChangeText={setPassword}
           />
-        </div>
-        {!isLogin && (
-          <div style={styles.inputContainer}>
-            <label style={styles.label} htmlFor="username">Username</label>
-            <input
-              style={styles.input}
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-        )}
-        {error && <div style={styles.error}>{error}</div>}
-        <button style={styles.button} type="submit">{isLogin ? 'Login' : 'Signup'}</button>
-        <button style={styles.toggleButton} type="button" onClick={toggleForm}>
-          {isLogin ? 'Need an account? Signup' : 'Have an account? Login'}
-        </button>
-      </form>
-    </div>
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#AD40AF",
+              borderRadius: 10,
+              paddingHorizontal: 30,
+              paddingVertical: 10,
+              marginBottom: 20,
+            }}
+            onPress={handleLogin}
+          >
+            <Text style={{ color: "#fff", textAlign: "center" }}>Login</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: 30,
+          }}
+        >
+          <Text>New to the app?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Text style={{ color: "#AD40AF", fontWeight: "700" }}>
+              {" "}
+              Register
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

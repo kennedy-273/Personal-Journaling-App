@@ -2,29 +2,21 @@ import React, { useState } from 'react';
 import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, StyleSheet,} from 'react-native';
 import { Icon, Button, Card } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Set up Date:
-const dateObj = new Date();
-const weekdayArr = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
-const weekday = weekdayArr[dateObj.getDay()];
-const month = dateObj.getMonth();
-const day = dateObj.getDate();
-const year = dateObj.getFullYear();
-const date = `${weekday}, ${month + 1}/${day}/${year}`;
 
 const JournalEntry = ({ navigation }) => {
   const [previewModal, setPreviewModal] = useState(false);
   const [newEntryData, setNewEntryData] = useState([]);
   const [newEntryTitle, setNewEntryTitle] = useState('');
   const [newEntryCategory, setNewEntryCategory] = useState('');
-  const [newEntryText, setNewEntryText] = useState('');
+  const [newEntryBody, setNewEntryBody] = useState('');
 
   async function handleSubmitEntry() {
     const entry = {
-      date: date,
       title: newEntryTitle,
       category: newEntryCategory,
-      text: newEntryText,
+      body: newEntryBody,
     };
 
     // Update the state with the new entry
@@ -33,11 +25,12 @@ const JournalEntry = ({ navigation }) => {
     
     // Make a POST request to the backend API to save the entry
     try {
-      const response = await post('http://127.0.0.1:5500/journals', {
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch('https://journal-backend-x445.onrender.com/journals', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_TOKEN_HERE' // Replace YOUR_TOKEN_HERE with your actual token
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(entry),
       });
@@ -60,19 +53,13 @@ const JournalEntry = ({ navigation }) => {
     // Clear the input fields
     setNewEntryTitle('');
     setNewEntryCategory('');
-    setNewEntryText('');
+    setNewEntryBody('');
     setPreviewModal(false);
     Alert.alert('Journal entry submitted');
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View>
-          <Text style={{ fontFamily: fonts.BioRhyme, color: colors.midnightBlue, fontSize: 18 }}>{date}</Text>
-        </View>
-      </View>
-
       <View style={{ flexDirection: 'column' }}>
         <Text style={[{ fontFamily: fonts.SpaceMono, color: colors.midnightBlue }]}>Title:</Text>
         <TextInput
@@ -100,8 +87,8 @@ const JournalEntry = ({ navigation }) => {
       <View style={{ margin: 10 }}>
         <TextInput
           style={styles.textarea}
-          onChangeText={text => setNewEntryText(text)}
-          value={newEntryText}
+          onChangeText={text => setNewEntryBody(text)}
+          value={newEntryBody}
           multiline
           numberOfLines={10}
           placeholder='Add your journal entry here!'
@@ -132,14 +119,6 @@ const JournalEntry = ({ navigation }) => {
               />
             </TouchableOpacity>
             <Text style={{ fontFamily: fonts.Anton, color: colors.cobaltBlue, fontSize: 20, letterSpacing: 1, marginBottom: 10 }}>Your Journal Entry:</Text>
-            <ScrollView style={{ width: '100%' }}>
-              <Card>
-                <Card.Title style={{ fontWeight: 'normal', fontFamily: fonts.BioRhyme, fontSize: 18, marginBottom: 10 }}>{newEntryTitle}</Card.Title>
-                <Text style={{ textAlign: 'center', fontSize: 10, fontFamily: fonts.SpaceMono }}>{date}</Text>
-                <Card.Divider />
-                <Text style={{ fontFamily: fonts.SpaceItalic, fontSize: 12 }}>{newEntryText}</Text>
-              </Card>
-            </ScrollView>
             <Button
               title='Submit'
               buttonStyle={{ backgroundColor: colors.cobaltBlue, borderRadius: 5 }}

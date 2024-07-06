@@ -1,14 +1,14 @@
-import React from 'react';
-import { Text } from 'react-native';
+// import React from 'react';
+// import { Text } from 'react-native';
 
-const Settings = () => {
-  return (
-    <view>
-        <Text>Settings</Text>
+// const Settings = () => {
+//   return (
+//     <view>
+//         <Text>Settings</Text>
 
 
-    </view>
-  )
-}
+//     </view>
+//   )
+// }
 
-export default Settings;
+// export default Settings;

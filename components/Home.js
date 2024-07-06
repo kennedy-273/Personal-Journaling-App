@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import Login from './Login';
+
 
 const Home = ({navigation}) => {
 
@@ -22,20 +22,7 @@ const Home = ({navigation}) => {
         }}>
           A Journaling App
         </Text>
-      <Button
-        title="Log in"
-        buttonStyle={{
-          backgroundColor: 'rgba(111, 202, 186, 1)',
-          borderRadius: 5,
-        }}
-        titleStyle={{ fontWeight:'bold', fontSize:18 }}
-        containerStyle={{
-          height: 60,
-          width: 150,
-          marginVertical: 0
-        }}
-        onPress={ () => navigation.navigate('Login', {Login}) }
-      />
+     
       <View>
       
         <Text style={{
@@ -52,7 +39,6 @@ const Home = ({navigation}) => {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     padding: 16,
