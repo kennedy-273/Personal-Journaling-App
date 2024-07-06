@@ -6,31 +6,8 @@ import Login from './Login';
 
 const Home = ({navigation}) => {
 
-  console.log('home rendered')
+  // console.log('home rendered')
   const [randomQuote, setRandomQuote] = useState([]);
-
-  //Same API call as fetch, just using async/await:
-  // useEffect(() => {
-  //   async function getRandomQuote() {
-  //     try {
-  //       const res = await fetch('https://zenquotes.io/api/random');
-  //       const data = await res.json();
-  //       setRandomQuote(data[0]);
-  //     } catch (error) {
-  //       setRandomQuote({...randomQuote,q:'Network Error', a:'Zen Quotes'})
-  //       console.log('ERROR:', error)
-  //     }
-  //   }
-  // getRandomQuote()
-  // }, [])
-
-  //Fetch to API
-  useEffect(() => {
-    fetch('https://zenquotes.io/api/random')
-      .then(res => res.json())
-      .then(data => setRandomQuote(data[0]))
-      .catch(e => console.log('Error:', e))
-  }, [])
 
   return (
     <View style={styles.container}>
@@ -60,16 +37,7 @@ const Home = ({navigation}) => {
         onPress={ () => navigation.navigate('Login', {Login}) }
       />
       <View>
-        <Text 
-          style={{
-            marginHorizontal: 20,
-            fontSize: 14,
-            color: '#3E4985',
-            textAlign: 'center',
-            fontFamily: 'SpaceMono_400Regular_Italic'
-          }}>
-            {randomQuote.q ? `"${randomQuote.q}"` : 'Welcome...'}
-        </Text>
+      
         <Text style={{
           textAlign: 'center',
           marginTop: 15,

@@ -4,28 +4,31 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [newPassword, setNewPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true); // State to toggle between login and signup
   const [error, setError] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (isLogin) {
-      // Login logic here (replace with actual API call)
-      console.log('Logging in with', email, password);
-    } else {
-      // Signup logic here (replace with actual API call)
-      console.log('Signing up with', email, password);
-    }
-    // Example error handling
-    setError('An error occurred. Please try again.');
-  };
+  // Backend URLs
+  const loginUrl = 'http://127.0.0.1:5500/signin';
+  const signupUrl = 'http://127.0.0.1:5500/signup';
 
-  const handleUpdate = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Update username and/or password logic here (replace with actual API call)
-    console.log('Updating username and/or password');
-    setError('An error occurred. Please try again.');
+    try {
+      const response = await fetch(isLogin ? loginUrl : signupUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, username }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Success:' ,data);
+        // Handle successful login/signup here
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const toggleForm = () => {
@@ -96,7 +99,7 @@ const Login = () => {
 
   return (
     <div style={styles.container}>
-      <form style={styles.form} onSubmit={isLogin ? handleSubmit : handleUpdate}>
+      <form style={styles.form} onSubmit={handleSubmit}>
         <h2 style={styles.header}>{isLogin ? 'Login' : 'Signup'}</h2>
         <div style={styles.inputContainer}>
           <label style={styles.label} htmlFor="email">Email</label>
@@ -127,18 +130,6 @@ const Login = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-        )}
-        {!isLogin && (
-          <div style={styles.inputContainer}>
-            <label style={styles.label} htmlFor="newPassword">New Password</label>
-            <input
-              style={styles.input}
-              type="password"
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
         )}

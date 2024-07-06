@@ -1,400 +1,214 @@
-import React, { useState,  useEffect } from 'react';
-import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, Image, StyleSheet,Picker} from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, StyleSheet,} from 'react-native';
 import { Icon, Button, Card } from 'react-native-elements';
-import * as ImagePicker from 'expo-image-picker';
-// import * as SecureStore from 'expo-secure-store';
-// import JournalApp from '../components/journalApp';
+import { Picker } from '@react-native-picker/picker';
 
 // Set up Date:
 const dateObj = new Date();
-const weekdayArr = ["Sun","Mon","Tues","Weds","Thurs","Fri","Sat"];
+const weekdayArr = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
 const weekday = weekdayArr[dateObj.getDay()];
 const month = dateObj.getMonth();
 const day = dateObj.getDate();
 const year = dateObj.getFullYear();
-const date = `${weekday}, ${month}/${day}/${year}`;
+const date = `${weekday}, ${month + 1}/${day}/${year}`;
 
-const JournalEntry = ({navigation}) => {
-  console.log('journal entry rendered')
-
-  // Modal State:
-  const [moodModal, setMoodModal] = useState(false);
-  const [imageModal, setImageModal] = useState(false);
+const JournalEntry = ({ navigation }) => {
   const [previewModal, setPreviewModal] = useState(false);
-
-  // Journal Data State:
-  // const [allEntries, setAllEntries] = useState([])
   const [newEntryData, setNewEntryData] = useState([]);
-  
   const [newEntryTitle, setNewEntryTitle] = useState('');
-  const [moodIcon, setMoodIcon] = useState({
-    name: 'grin-alt',
-    color: colors.mint
-  });
-
   const [newEntryCategory, setNewEntryCategory] = useState('');
-
-  
-
   const [newEntryText, setNewEntryText] = useState('');
-  const [newEntryImage, setNewEntryImage] = useState([]);
- 
-  function handleSubmitEntry() {
 
-    let allEntries = newEntryData.concat({
-      id: newEntryData ? newEntryData : '',
+  async function handleSubmitEntry() {
+    const entry = {
       date: date,
       title: newEntryTitle,
-      mood: {
-        name: moodIcon.name,
-        color: moodIcon.color
-      },
+      category: newEntryCategory,
       text: newEntryText,
-      images: newEntryImage
-    });
+    };
 
+    // Update the state with the new entry
+    let allEntries = newEntryData.concat(entry);
     setNewEntryData(allEntries);
-    navigation.navigate('My Journal', {allEntries});
+    
+    // Make a POST request to the backend API to save the entry
+    try {
+      const response = await post('http://127.0.0.1:5500/journals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN_HERE' // Replace YOUR_TOKEN_HERE with your actual token
+      },
+      body: JSON.stringify(entry),
+      });
+
+      if (response.status !== 201) {
+      Alert.alert('Failed to save entry to backend');
+      } else {
+      const savedEntry = await response.json();
+      setNewEntryData([...newEntryData, savedEntry]);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to save entry to backend');
+    }
+    console.log('Entry saved:', entry);
+
+    // Navigate to 'My Journal' with updated entries
+    navigation.navigate('My Journal', { allEntries });
+
+    // Clear the input fields
     setNewEntryTitle('');
-    setMoodIcon({name:'grin-alt',color:colors.mint});
+    setNewEntryCategory('');
     setNewEntryText('');
-    setNewEntryImage([]);
-    setPreviewModal(!previewModal);
-    Alert.alert('Journal entry submitted'); 
-  }
-
-  // ImagePicker from https://docs.expo.dev/versions/latest/sdk/imagepicker/
-  const pickGalleryImage = async () => {
-    setImageModal(!imageModal);
-
-    // const [galleryPermission, setGalleryPermission] = ImagePicker.useMediaLibraryPermissions();
-
-    // if (galleryPermission) {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        setNewEntryImage(prevJournalImages => [...prevJournalImages, result.uri]);
-        console.log(newEntryImage)
-      }
-  }
-
-  const pickCameraImage = async () => {
-    setImageModal(!imageModal);
-
-    // if (galleryPermission) {
-      let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        setNewEntryImage(prevJournalImages => [...prevJournalImages, result.uri]);
-        console.log(newEntryImage)
-      }
+    setPreviewModal(false);
+    Alert.alert('Journal entry submitted');
   }
 
   return (
     <ScrollView style={styles.container}>
-   
-
-      <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
         <View>
-          <Text style={{fontFamily:fonts.BioRhyme,color:colors.midnightBlue,fontSize:18}}>{date}</Text>
-          <View style={styles.text}>
-            <Icon name='location-outline' type='ionicon' />
-            <Text style={{fontFamily:fonts.SpaceMono}}>Location</Text>
-          </View>
+          <Text style={{ fontFamily: fonts.BioRhyme, color: colors.midnightBlue, fontSize: 18 }}>{date}</Text>
         </View>
-        <TouchableOpacity
-          onPress={() => setMoodModal(true)}>
-          <Icon 
-            style={{padding:8,backgroundColor:'#FFF',borderRadius:50}}
-            size={45}
-            name={moodIcon.name}
-            color={moodIcon.color}
-            type='font-awesome-5' />
-        </TouchableOpacity>
       </View>
-      <Modal
-        animationType='fade'
-        visible={moodModal} 
-        transparent={true}
-        backgroundOpacity={0.5}
-        backgroundColor={'#000'}
-        onRequestClose={() => setMoodModal(!moodModal)} >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={{alignSelf:'flex-end'}}>
-              <TouchableOpacity
-                onPress={() => {
-                  setMoodModal(!moodModal);
-                  moodIcon.name !== 'grin-alt' ? setMoodIcon({name:'grin-alt',color:colors.mint}) : moodIcon.name;
-                }} >
-                <Icon
-                  style={{margin:-5, padding:-10}}
-                  name='close'
-                  type='ionicons'
-                  size={30}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={{fontWeight:'bold',fontSize:20}}>Choose your mood:</Text>
-            <View style={styles.moodsContainer}>
-              <TouchableOpacity onPress={() => setMoodIcon({name:'sad-tear',color:colors.midnightBlue})}><Icon size={45} name='sad-tear' type='font-awesome-5' color='#3E4985' padding={5} borderRadius={50} /></TouchableOpacity>
-              <TouchableOpacity onPress={() => setMoodIcon({name:'frown',color:colors.cobaltBlue})}><Icon size={45} name='frown' type='font-awesome-5' color='#488FB1' padding={5} borderRadius={50} /></TouchableOpacity>
-              <TouchableOpacity onPress={() => setMoodIcon({name:'meh',color:colors.turquoise})}><Icon size={45} name='meh' type='font-awesome-5' color='#4FD3C4' padding={5} borderRadius={50} /></TouchableOpacity>
-              <TouchableOpacity onPress={() => setMoodIcon({name:'grin-beam',color:colors.yellow})}><Icon size={45} name='grin-beam' type='font-awesome-5' color='#FFD32D' padding={5} borderRadius={50} /></TouchableOpacity>
-              <TouchableOpacity onPress={() => setMoodIcon({name:'grin-hearts',color:colors.pink})}><Icon size={45} name='grin-hearts' type='font-awesome-5' color='#FF449F' padding={5} borderRadius={50} /></TouchableOpacity>
-            </View>
-            <Button
-              title='Select'
-              containerStyle={{width:'30%',borderRadius:30}}
-              buttonStyle={{backgroundColor:'#488FB1'}}
-              onPress={() => setMoodModal(!moodModal)}
-              />
-          </View>
-        </View>
-      </Modal>
+
       <View style={{ flexDirection: 'column' }}>
-        <Icon 
-          style={{marginLeft:2.5, marginRight:5}} 
-          color={colors.midnightBlue}
-          type='font-awesome' />
-        <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Title:</Text>
+        <Text style={[{ fontFamily: fonts.SpaceMono, color: colors.midnightBlue }]}>Title:</Text>
         <TextInput
           style={styles.title}
           onChangeText={title => setNewEntryTitle(title)}
-          defaultValue={newEntryTitle}
           value={newEntryTitle}
           placeholder='Your Title'
           autoCapitalize='words'
         />
-        
-        
-        <Icon 
-          style={{marginLeft:2.5, marginBottom:5, marginRight:5}} 
-          color={colors.midnightBlue}
-          type='font-awesome' />
-        <Text style={[{fontFamily:fonts.SpaceMono,color:colors.midnightBlue}]}>Category:</Text>
+
+        <Text style={[{ fontFamily: fonts.SpaceMono, color: colors.midnightBlue }]}>Category:</Text>
         <Picker
           selectedValue={newEntryCategory}
-          style={{ height: 50, width: 200 }}
-          onValueChange={(itemValue, itemIndex) =>
-            setNewEntryCategory(itemValue)
-          }>
+          style={styles.category}
+          onValueChange={(itemValue) => setNewEntryCategory(itemValue)}
+        >
           <Picker.Item label="Select Category..." value="" />
           <Picker.Item label="Work" value="Work" />
           <Picker.Item label="Personal" value="Personal" />
           <Picker.Item label="Travel" value="Travel" />
-          {/* Add more categories as needed */}
+         
         </Picker>
       </View>
 
-      <View style={{margin:10}}>
-        <TextInput 
+      <View style={{ margin: 10 }}>
+        <TextInput
           style={styles.textarea}
           onChangeText={text => setNewEntryText(text)}
-          defaultValue={newEntryText}
           value={newEntryText}
           multiline
           numberOfLines={10}
-          allowFontScaling
-          autoCapitalize='sentences'
-          textAlignVertical= 'top'
           placeholder='Add your journal entry here!'
-        /> 
+        />
       </View>
-      
-      <Modal
-        transparent={true}
-        animationType='fade'
-        visible={imageModal}
-        onRequestClose={() => {
-          setImageModal(!imageModal);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            
-            <View style={{margin:15,paddingBottom:10,display:'flex',flexDirection:'row',width:'85%',justifyContent:'space-between'}}>
-              
-            </View>
-          </View>  
-        </View>
-      </Modal>
+
       <Button
         title="Log Entry"
-        icon={{
-          name: 'check',
-          type: 'ionicons',
-          size: 30,
-          color: '#FFF8F3',
-        }}
-        loading={false}
-        loadingProps={{size:'small',color:'white'}}
-        buttonStyle={{backgroundColor:'#4FD3C4',borderRadius:40,paddingBottom:14}}
-        titleStyle={{fontSize:18,fontFamily:fonts.Anton,letterSpacing:0.5}}
-        containerStyle={{
-          height: 80,
-          width: '100%',
-          marginBottom: 30
-        }}
+        buttonStyle={{ backgroundColor: colors.turquoise, borderRadius: 40, paddingBottom: 14 }}
+        titleStyle={{ fontSize: 18, fontFamily: fonts.Anton, letterSpacing: 0.5 }}
+        containerStyle={{ height: 80, width: '100%', marginBottom: 30 }}
         onPress={() => setPreviewModal(true)}
       />
       <Modal
         animationType='fade'
         transparent={true}
         visible={previewModal}
-        onRequestClose={() => {
-          setPreviewModal(!previewModal);
-        }}
+        onRequestClose={() => setPreviewModal(!previewModal)}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={{alignSelf:'flex-end'}}>
-              <TouchableOpacity
-                onPress={() => {
-                  setPreviewModal(!previewModal);
-                }} >
-                <Icon
-                  style={{margin:-5, padding:-10}}
-                  name='close'
-                  type='ionicons'
-                  size={30} />
-              </TouchableOpacity>
-            </View>
-            <Text style={{fontFamily:fonts.Anton,color:colors.cobaltBlue,fontSize:20,letterSpacing:1,marginBottom:10}}>Your Journal Entry:</Text>
-            <ScrollView style={{width:'100%'}} >
+            <TouchableOpacity
+              onPress={() => setPreviewModal(!previewModal)}
+            >
+              <Icon
+                name='close'
+                size={30}
+              />
+            </TouchableOpacity>
+            <Text style={{ fontFamily: fonts.Anton, color: colors.cobaltBlue, fontSize: 20, letterSpacing: 1, marginBottom: 10 }}>Your Journal Entry:</Text>
+            <ScrollView style={{ width: '100%' }}>
               <Card>
-                <Card.Title style={{fontWeight:'normal',fontFamily:fonts.BioRhyme,fontSize:18,marginBottom:10}}>{newEntryTitle}</Card.Title>
-                <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingBottom:5}}>
-                  <Text style={{textAlign:'center',fontSize:10,fontFamily:fonts.SpaceMono}}>{date}</Text>
-                  <Icon size={35} name={moodIcon.name} color={moodIcon.color} type='font-awesome-5' />
-                </View>
+                <Card.Title style={{ fontWeight: 'normal', fontFamily: fonts.BioRhyme, fontSize: 18, marginBottom: 10 }}>{newEntryTitle}</Card.Title>
+                <Text style={{ textAlign: 'center', fontSize: 10, fontFamily: fonts.SpaceMono }}>{date}</Text>
                 <Card.Divider />
-                <Text style={{fontFamily:fonts.SpaceItalic,fontSize:12}}>{newEntryText}</Text>
-                {newEntryImage && 
-                  newEntryImage.map(image => 
-                    <Image
-                      key={image}
-                      source={{ uri: image }} 
-                      style={{ 
-                        width: 260, 
-                        height: 195,
-                        marginVertical: 10,
-                        alignSelf:'center'
-                      }}
-                      resizeMode='cover' 
-                    />
-                  )
-                }
+                <Text style={{ fontFamily: fonts.SpaceItalic, fontSize: 12 }}>{newEntryText}</Text>
               </Card>
             </ScrollView>
             <Button
-              className='previewModalBtn'
               title='Submit'
-              loading={false}
-              loadingProps={{size:'small',color:'white'}}
-              buttonStyle={{
-                backgroundColor:colors.cobaltBlue,
-                borderRadius:5,
-              }}
-              containerStyle={{
-                width:200,
-                marginHorizontal:50,
-                marginVertical:20,
-              }}
-              onPress={() => handleSubmitEntry()}
+              buttonStyle={{ backgroundColor: colors.cobaltBlue, borderRadius: 5 }}
+              containerStyle={{ width: 200, marginHorizontal: 50, marginVertical: 20 }}
+              onPress={handleSubmitEntry}
             />
           </View>
         </View>
       </Modal>
     </ScrollView>
-  )
+  );
 }
 
 const colors = {
-  pink: '#FF449F',
-  yellow: '#FFD32D',
   mint: '#C1F8CF',
-  turquoise: '#4FD3C4',
   midnightBlue: '#3E4985',
   cobaltBlue: '#488FB1',
-}
+  turquoise: '#4FD3C4',
+};
 
 const fonts = {
   Anton: 'Anton_400Regular',
   BioRhyme: 'BioRhyme_400Regular',
   SpaceMono: 'SpaceMono_400Regular',
   SpaceItalic: 'SpaceMono_400Regular_Italic',
-  BigShoulders: 'BigShouldersDisplay_700Bold'
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    padding:16,
+    padding: 16,
     backgroundColor: colors.mint,
   },
-  text: {
-    marginTop: 10, 
-    marginRight:'auto', 
-    display:'flex', 
-    flexDirection:'row',
-    alignItems:'center'
-  },
   title: {
-    marginLeft:10,
-    backgroundColor:'#FFF',
-    width:'72%',
-    height:46,
-    paddingHorizontal:10,
-    color:colors.midnightBlue,
-    fontFamily:fonts.BioRhyme,
-    fontSize:16
+    marginLeft: 10,
+    backgroundColor: '#FFF',
+    width: '72%',
+    height: 46,
+    paddingHorizontal: 10,
+    color: colors.midnightBlue,
+    fontFamily: fonts.BioRhyme,
+    fontSize: 16,
   },
   textarea: {
-    backgroundColor:'#FFF',
-    padding:10,
-    marginHorizontal:-10,
-    alignItems:'flex-start',
-    marginTop:5,
-    fontFamily:fonts.SpaceItalic,
-    fontStyle:'normal',
-    fontSize:12
+    backgroundColor: '#FFF',
+    padding: 10,
+    marginHorizontal: -10,
+    alignItems: 'flex-start',
+    marginTop: 5,
+    fontFamily: fonts.SpaceItalic,
+    fontSize: 12,
   },
   centeredView: {
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:56,
-    marginBottom:79,
-    backgroundColor:'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 56,
+    marginBottom: 79,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-  borderRadius: 10,
-  padding: 20,
-  alignItems: 'center',
-  margin: 15,
-  backgroundColor: '#FFF',
-  width: '92%',
-  maxHeight: '75%',
-},
-moodsContainer: {
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  width: '100%',
-  paddingVertical: 30,
-  }
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    margin: 15,
+    backgroundColor: '#FFF',
+    width: '92%',
+    maxHeight: '75%',
+  },
 });
 
 export default JournalEntry;
-

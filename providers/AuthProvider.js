@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import app from "../RealmApp";
+import app from "../../RealmApp";
 
 // Create a new Context object that will be provided to descendants of
 // the AuthProvider.
@@ -44,8 +44,6 @@ const AuthProvider = ({ children }) => {
 
   // The signIn function takes an email and password and uses the
   // emailPassword authentication provider to log in.
-  // This authentication method should be set up correctly on the MongoDB Realm App 
-  // see: https://docs.mongodb.com/realm/authentication/providers/
   const signIn = async (email, password) => {
     const creds = Realm.Credentials.emailPassword(email, password);
     const newUser = await app.logIn(creds);
@@ -54,8 +52,6 @@ const AuthProvider = ({ children }) => {
 
   // The signUp function takes an email and password and uses the
   // emailPassword authentication provider to register the user.
-  // This authentication should be set up correctly on the MongoDB Realm App 
-  // see: https://docs.mongodb.com/realm/authentication/providers/
   const signUp = async (email, password) => {
     await app.emailPasswordAuth.registerUser({ email, password });
   };

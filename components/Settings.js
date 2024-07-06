@@ -3,7 +3,11 @@ import { Text } from 'react-native';
 
 const Settings = () => {
   return (
-    <Text>Settings</Text>
+    <view>
+        <Text>Settings</Text>
+
+
+    </view>
   )
 }
 

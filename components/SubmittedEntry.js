@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Pressable, Image, StyleSheet, Alert, TextInput, Button } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 
-const SubmittedEntry = (props) => {
-  if (props.route.params === undefined) {
+const SubmittedEntry = ({ route }) => {
+  if (!route.params || !route.params.allEntries) {
     return (
       <View style={styles.noEntriesContainer}>
         <Text style={styles.noEntriesText}>You haven't created any entries yet.</Text>
@@ -12,7 +12,7 @@ const SubmittedEntry = (props) => {
     );
   }
 
-  const { allEntries } = props.route.params;
+  const { allEntries } = route.params;
   const [savedEntries, setSavedEntries] = useState(allEntries || []);
   const [isEditing, setIsEditing] = useState(false);
   const [currentEntry, setCurrentEntry] = useState(null);
@@ -23,38 +23,42 @@ const SubmittedEntry = (props) => {
 
   const handleDelete = async (entryId) => {
     try {
-      const response = await fetch(`https://yourapi.com/entries/${entryId}`, {
+      const response = await fetch(`http://127.0.0.1:5500/journal/${entryId}`, {
         method: 'DELETE',
       });
-
-      if (!response.ok) throw new Error('Delete failed');
-      setSavedEntries(savedEntries.filter((entry) => entry.id !== entryId));
+      if (!response.ok) {
+        throw new Error('Delete failed');
+      } else {
+        setSavedEntries(savedEntries.filter(entry => entry.id !== entryId));
+        Alert.alert('Entry deleted successfully');
+      }
     } catch (error) {
-      Alert.alert('Error', error.message);
+      console.error(error);
+      Alert.alert('Error', 'Failed to delete entry');
     }
   };
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`https://yourapi.com/entries/${currentEntry.id}`, {
+      const response = await fetch(`http://127.0.0.1:5500/journal/${currentEntry.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(currentEntry),
       });
-
-      if (!response.ok) throw new Error('Update failed');
-      const updatedEntry = await response.json();
-      setSavedEntries(
-        savedEntries.map((entry) =>
-          entry.id === updatedEntry.id ? updatedEntry : entry
-        )
-      );
-      setIsEditing(false);
-      setCurrentEntry(null);
+      if (!response.ok) {
+        throw new Error('Update failed');
+      } else {
+        const updatedEntry = await response.json();
+        setSavedEntries(savedEntries.map(entry => entry.id === updatedEntry.id ? updatedEntry : entry));
+        setIsEditing(false);
+        setCurrentEntry(null);
+        Alert.alert('Entry updated successfully');
+      }
     } catch (error) {
-      Alert.alert('Error', error.message);
+      console.error(error);
+      Alert.alert('Error', 'Failed to update entry');
     }
   };
 
@@ -67,7 +71,7 @@ const SubmittedEntry = (props) => {
     setCurrentEntry({ ...currentEntry, [key]: value });
   };
 
-  const submittedEntries = savedEntries?.map((entry) => (
+  const submittedEntries = savedEntries.map(entry => (
     <View key={entry.id}>
       <Pressable
         onLongPress={() =>
@@ -90,16 +94,16 @@ const SubmittedEntry = (props) => {
           )
         }
       >
-        <Card key={entry.id}>
+        <Card>
           <Card.Title style={styles.title}>{entry.title}</Card.Title>
           <View style={styles.header}>
-            <Text style={styles.date}>{entry?.date}</Text>
-            <Icon size={35} name={entry?.mood?.name} color={entry?.mood?.color} />
+            <Text style={styles.date}>{entry.date}</Text>
+            <Icon size={35} name={entry.mood?.name} color={entry.mood?.color} />
           </View>
           <Card.Divider />
           <Text style={styles.text}>{entry.text}</Text>
           {entry.images &&
-            entry.images.map((image) => (
+            entry.images.map(image => (
               <Image
                 key={image}
                 source={{ uri: image }}
@@ -114,9 +118,8 @@ const SubmittedEntry = (props) => {
   ));
 
   return (
-    <ScrollView style={styles.container}>
-      {submittedEntries}
-      {isEditing && (
+    <ScrollView>
+      {isEditing && currentEntry ? (
         <View style={styles.editContainer}>
           <TextInput
             style={styles.input}
@@ -132,87 +135,60 @@ const SubmittedEntry = (props) => {
             multiline
           />
           <Button title="Save" onPress={handleUpdate} />
-          <Button title="Cancel" onPress={() => setIsEditing(false)} />
+          <Button title="Cancel" onPress={() => { setIsEditing(false); setCurrentEntry(null); }} />
         </View>
+      ) : (
+        submittedEntries
       )}
     </ScrollView>
   );
 };
 
-const fonts = {
-  Anton: 'Anton_400Regular',
-  BioRhyme: 'BioRhyme_400Regular',
-  SpaceMono: 'SpaceMono_400Regular',
-  SpaceItalic: 'SpaceMono_400Regular_Italic',
-  BigShoulders: 'BigShouldersDisplay_700Bold',
-};
-
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#C1F8CF',
-  },
   noEntriesContainer: {
-    backgroundColor: '#C1F8CF',
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
+    flex: 1,
     justifyContent: 'center',
-    padding: 25,
+    alignItems: 'center',
   },
   noEntriesText: {
-    textAlign: 'center',
-    marginBottom: 20,
-    fontFamily: fonts.SpaceItalic,
-    fontSize: 12,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   createEntryText: {
-    fontFamily: fonts.SpaceMono,
-    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 10,
   },
   title: {
-    fontWeight: 'normal',
-    fontFamily: fonts.BioRhyme,
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   header: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 5,
-    paddingBottom: 5,
   },
   date: {
-    textAlign: 'center',
-    fontSize: 10,
-    fontFamily: fonts.SpaceMono,
+    fontSize: 14,
+    color: 'gray',
   },
   text: {
-    fontFamily: fonts.SpaceItalic,
-    fontSize: 12,
-    fontStyle: 'normal',
-    paddingHorizontal: 5,
+    fontSize: 16,
+    marginVertical: 10,
   },
   image: {
-    width: 325,
-    height: 243.75,
-    alignSelf: 'center',
-    marginTop: 10,
+    width: '100%',
+    height: 200,
+    marginVertical: 10,
   },
   editContainer: {
     padding: 20,
-    backgroundColor: '#fff',
-    marginBottom: 20,
   },
   input: {
-    fontFamily: fonts.BioRhyme,
-    fontSize: 16,
-    marginBottom: 10,
-    padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: 'gray',
     borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
   },
 });
 

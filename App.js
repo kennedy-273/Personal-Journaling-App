@@ -25,24 +25,34 @@ import HomeNavigator from "./HomeNavigator";
 import JournalEntry from "./components/JournalEntry";
 import CalendarComponent from "./components/Calendar";
 import SubmittedEntry from "./components/SubmittedEntry";
+import Login from "./components/Login";
 
 const Tab = createBottomTabNavigator();
-
+// if (!antonLoaded || !bioLoaded || !spaceLoaded || !bigLoaded) {
+//     console.log(
+//       "Loading >>>>>>>>...",
+//       antonLoaded,
+//       bioLoaded,
+//       spaceLoaded,
+//       bigLoaded
+//     );
+//     return <AppLoading />;
+//   } else {
 const App = () => {
-  let [antonLoaded] = useAnton({
+  useAnton({
     Anton_400Regular,
   });
 
-  let [bioLoaded] = useBioRhyme({
+  useBioRhyme({
     BioRhyme_400Regular,
   });
 
-  let [spaceLoaded] = useSpaceMono({
+  useSpaceMono({
     SpaceMono_400Regular,
     SpaceMono_400Regular_Italic,
   });
 
-  let [bigLoaded] = useBigShoulders({
+  useBigShoulders({
     BigShouldersDisplay_700Bold,
   });
 
@@ -93,6 +103,7 @@ const App = () => {
         <Tab.Screen name="New Entry" component={JournalEntry} />
         <Tab.Screen name="My Journal" component={SubmittedEntry} />
         <Tab.Screen name="Calendar" component={CalendarComponent} />
+        <Tab.Screen name="Login" component={Login} />
       </Tab.Navigator>
     </NavigationContainer>
   );
