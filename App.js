@@ -25,7 +25,9 @@ import JournalEntry from "./components/JournalEntry";
 import CalendarComponent from "./components/Calendar";
 import SubmittedEntry from "./components/SubmittedEntry";
 import Login from "./components/Login";
-// import EditJournal from "./components/EditJournal";
+import Profile from "./components/Profile";
+import SignOut from "./components/SignOut";
+import { JournalProvider } from "./context/JornalContextProvider";
 
 const Tab = createBottomTabNavigator();
 
@@ -48,48 +50,52 @@ const App = () => {
   });
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color }) => {
-            let iconName;
-            if (route.name === "Login") {
-              iconName = "log-in";
-            } else if (route.name === "Home") {
-              iconName = "home";
-            } else if (route.name === "New Entry") {
-              iconName = "add-circle";
-            } else if (route.name === "My Journal") {
-              iconName = "journal";
-            } else if (route.name === "Calendar") {
-              iconName = "calendar-outline";
-            }
-            return <Ionicons name={iconName} size={35} color={color} />;
-          },
-          headerTitleAlign: "center",
-          headerStyle: { backgroundColor: colors.cobaltBlue },
-          headerTitleStyle: {
-            color: "#FFF",
-            fontFamily: fonts.Anton,
-            fontSize: 24,
-            letterSpacing: 1,
-            textTransform: "uppercase",
-          },
-          tabBarLabelStyle: { paddingBottom: 10 },
-          tabBarStyle: { height: 80, backgroundColor: colors.midnightBlue },
-          tabBarActiveTintColor: colors.mint,
-          tabBarLabelStyle: { fontFamily: fonts.BioRhyme, paddingBottom: 7 },
-          tabBarInactiveTintColor: "#FFF",
-        })}
-      >
-        <Tab.Screen name="Login" component={Login} />
-        <Tab.Screen name="Home" component={HomeNavigator} />
-        <Tab.Screen name="New Entry" component={JournalEntry} />
-        <Tab.Screen name="My Journal" component={SubmittedEntry} />
-        <Tab.Screen name="Calendar" component={CalendarComponent} />
-        {/* <Tab.Screen name="EditJournal" component={EditJournal} /> */}
-      </Tab.Navigator>
-    </NavigationContainer>
+    <JournalProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color }) => {
+              let iconName;
+              if (route.name === "Login") {
+                iconName = "log-in";
+              } else if (route.name === "Home") {
+                iconName = "home";
+              } else if (route.name === "New Entry") {
+                iconName = "add-circle";
+              } else if (route.name === "Profile") {
+                iconName = "person-circle-outline";
+              } else if (route.name === "Logout") {
+                iconName = "log-out";
+              }
+              return <Ionicons name={iconName} size={25} color={color} />;
+            },
+            headerTitleAlign: "center",
+            headerStyle: { backgroundColor: colors.cobaltBlue },
+            headerTitleStyle: {
+              color: "#FFF",
+              fontFamily: fonts.Anton,
+              fontSize: 24,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+            },
+            tabBarLabelStyle: { paddingBottom: 10 },
+            tabBarStyle: { height: 80, backgroundColor: colors.midnightBlue },
+            tabBarActiveTintColor: colors.mint,
+            tabBarLabelStyle: { fontFamily: fonts.BioRhyme, paddingBottom: 7 },
+            tabBarInactiveTintColor: "#FFF",
+          })}
+        >
+          <Tab.Screen name="Login" component={Login} />
+          <Tab.Screen name="Home" component={HomeNavigator} />
+          <Tab.Screen name="New Entry" component={JournalEntry} />
+          <Tab.Screen name="Profile" component={Profile} />
+          <Tab.Screen name="Logout" component={SignOut} />
+          {/* <Tab.Screen name="My Journal" component={SubmittedEntry} /> */}
+          {/* <Tab.Screen name="Calendar" component={CalendarComponent} /> */}
+          {/* <Tab.Screen name="EditJournal" component={EditJournal} /> */}
+        </Tab.Navigator>
+      </NavigationContainer>
+    </JournalProvider>
   );
 };
 

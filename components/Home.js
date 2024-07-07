@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -10,47 +10,48 @@ import {
 } from "react-native";
 import EditJournal from "./EditJournal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { JournalContext } from "../context/JournalContext";
 
 const Home = ({ navigation, route }) => {
   const [journalEntries, setJournalEntries] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState(null);
 
-  useEffect(() => {
-    fetchJournals();
-  }, []);
+  // useEffect(() => {
+  //   fetchJournals();
+  // }, []);
 
-  const fetchJournals = async () => {
-    if (loading) return;
-    setLoading(true);
+  // const fetchJournals = async () => {
+  //   if (loading) return;
+  //   setLoading(true);
 
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const response = await fetch(
-        "https://journal-backend-x445.onrender.com/journals",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  //   try {
+  //     const token = await AsyncStorage.getItem("token");
+  //     const response = await fetch(
+  //       "https://journal-backend-x445.onrender.com/journals",
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (response.status !== 200) {
-        console.log("Failed to fetch journal entries", response.status);
-        Alert.alert("Error", "Failed to fetch journal entries");
-      } else {
-        const journals = await response.json();
-        setJournalEntries((prevEntries) => [...prevEntries, ...journals]);
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Failed to fetch journal entries");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (response.status !== 200) {
+  //       console.log("Failed to fetch journal entries", response.status);
+  //       Alert.alert("Error", "Failed to fetch journal entries");
+  //     } else {
+  //       const journals = await response.json();
+  //       setJournalEntries((prevEntries) => [...prevEntries, ...journals]);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     Alert.alert("Error", "Failed to fetch journal entries");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleEdit = async (journal) => {
     setEntryToEdit(journal);
@@ -62,7 +63,7 @@ const Home = ({ navigation, route }) => {
         entry.id === updatedEntry.id ? updatedEntry : entry
       )
     );
-  }
+  };
 
   const handleDelete = async (journalId) => {
     try {
@@ -97,8 +98,20 @@ const Home = ({ navigation, route }) => {
     setEntryToEdit(null);
   };
 
+  const { loading, journals } = useContext(JournalContext);
+
+  useEffect(() => {
+    setJournalEntries(journals);
+  }, [journals]);
+
   if (entryToEdit?.id) {
-    return <EditJournal entry={entryToEdit} handleOnCancel={handleOnCancel} updateEntry={updateEntry} />;
+    return (
+      <EditJournal
+        entry={entryToEdit}
+        handleOnCancel={handleOnCancel}
+        updateEntry={updateEntry}
+      />
+    );
   }
 
   return (

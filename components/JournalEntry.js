@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, TextInput, Alert, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon, Button } from 'react-native-elements';
-import { Picker } from '@react-native-picker/picker';
+import React, { useContext, useState } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Alert,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { Icon, Button } from "react-native-elements";
+import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { JournalContext } from "../context/JournalContext";
 
 const JournalEntry = ({ navigation }) => {
   const [previewModal, setPreviewModal] = useState(false);
   const [newEntryData, setNewEntryData] = useState([]);
-  const [newEntryTitle, setNewEntryTitle] = useState('');
-  const [newEntryCategory, setNewEntryCategory] = useState('');
-  const [newEntryBody, setNewEntryBody] = useState('');
+  const [newEntryTitle, setNewEntryTitle] = useState("");
+  const [newEntryCategory, setNewEntryCategory] = useState("");
+  const [newEntryBody, setNewEntryBody] = useState("");
+
+  const { fetchJournals } = useContext(JournalContext);
 
   async function handleSubmitEntry() {
     const entry = {
@@ -22,45 +34,49 @@ const JournalEntry = ({ navigation }) => {
     setNewEntryData(allEntries);
 
     try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await fetch('https://journal-backend-x445.onrender.com/journals', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(entry),
-      });
+      const token = await AsyncStorage.getItem("token");
+      const response = await fetch(
+        "https://journal-backend-x445.onrender.com/journals",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(entry),
+        }
+      );
 
       if (response.status !== 201) {
-        Alert.alert('Failed to save entry to backend');
+        Alert.alert("Failed to save entry to backend");
       } else {
         const savedEntry = await response.json();
         setNewEntryData([...newEntryData, savedEntry]);
+        fetchJournals();
       }
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Failed to save entry to backend');
+      Alert.alert("Error", "Failed to save entry to backend");
     }
-    navigation.navigate('Home', { allEntries });
+    navigation.navigate("Home", { allEntries });
 
-    setNewEntryTitle('');
-    setNewEntryCategory('');
-    setNewEntryBody('');
+    setNewEntryTitle("");
+    setNewEntryCategory("");
+    setNewEntryBody("");
     setPreviewModal(false);
-    Alert.alert('Journal entry submitted');
+    // Alert.alert("Journal entry submitted");
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ flexDirection: 'column' }}>
+      <View style={{ flexDirection: "column" }}>
         <Text style={styles.label}>Title:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={title => setNewEntryTitle(title)}
+          onChangeText={(title) => setNewEntryTitle(title)}
           value={newEntryTitle}
-          placeholder='Your Title'
-          autoCapitalize='words'
+          placeholder="Your Title"
+          autoCapitalize="words"
           placeholderTextColor={colors.placeholder}
         />
 
@@ -80,11 +96,11 @@ const JournalEntry = ({ navigation }) => {
       <View style={{ margin: 10 }}>
         <TextInput
           style={styles.textarea}
-          onChangeText={text => setNewEntryBody(text)}
+          onChangeText={(text) => setNewEntryBody(text)}
           value={newEntryBody}
           multiline
           numberOfLines={10}
-          placeholder='Add your journal entry here!'
+          placeholder="Add your journal entry here!"
           placeholderTextColor={colors.placeholder}
         />
       </View>
@@ -97,7 +113,7 @@ const JournalEntry = ({ navigation }) => {
         onPress={() => setPreviewModal(true)}
       />
       <Modal
-        animationType='fade'
+        animationType="fade"
         transparent={true}
         visible={previewModal}
         onRequestClose={() => setPreviewModal(!previewModal)}
@@ -105,18 +121,18 @@ const JournalEntry = ({ navigation }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <TouchableOpacity onPress={() => setPreviewModal(!previewModal)}>
-              <Icon name='close' size={30} />
+              <Icon name="close" size={30} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Submit Your Journal Entry:</Text>
             <View style={styles.modalButtonRow}>
               <Button
-                title='Submit'
+                title="Submit"
                 buttonStyle={styles.submitButton}
                 containerStyle={styles.submitButtonContainer}
                 onPress={handleSubmitEntry}
               />
               <Button
-                title='Cancel'
+                title="Cancel"
                 buttonStyle={styles.cancelButton}
                 containerStyle={styles.cancelButtonContainer}
                 onPress={() => setPreviewModal(false)}
@@ -127,21 +143,21 @@ const JournalEntry = ({ navigation }) => {
       </Modal>
     </ScrollView>
   );
-}
+};
 
 const colors = {
-  background: '#F5F5F5',
-  text: '#333333',
-  primary: '#AD40AF',
-  secondary: '#03DAC6',
-  inputBackground: '#FFFFFF',
-  placeholder: '#999999',
-  cancel: 'red',
+  background: "#F5F5F5",
+  text: "#333333",
+  primary: "#AD40AF",
+  secondary: "#03DAC6",
+  inputBackground: "#FFFFFF",
+  placeholder: "#999999",
+  cancel: "red",
 };
 
 const fonts = {
-  regular: 'System',
-  bold: 'System',
+  regular: "System",
+  bold: "System",
 };
 
 const styles = StyleSheet.create({
@@ -156,7 +172,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: colors.inputBackground,
-    width: '100%',
+    width: "100%",
     height: 46,
     paddingHorizontal: 10,
     color: colors.text,
@@ -193,16 +209,16 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
     backgroundColor: colors.inputBackground,
     borderRadius: 5,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -215,9 +231,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   modalButtonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   submitButton: {
     backgroundColor: colors.secondary,
