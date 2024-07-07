@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
   const [journalEntries, setJournalEntries] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     fetchJournals();
-  }, [page]);
+  }, []);
 
   const fetchJournals = async () => {
     if (loading) return;
@@ -18,7 +27,7 @@ const Home = ({ navigation }) => {
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(
-        `https://journal-backend-x445.onrender.com/journals?page=${page}`,
+        "https://journal-backend-x445.onrender.com/journals",
         {
           method: "GET",
           headers: {
@@ -47,21 +56,74 @@ const Home = ({ navigation }) => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  const handleEdit = async (journalId) => {
+    navigation.navigate("JournalEntry", { journal });
+    // navigation.navigate("JournalEntry");
+  };
+
+  const handleDelete = async (journalId) => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await fetch(
+        `https://journal-backend-x445.onrender.com/journal/${journalId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status !== 200) {
+        Alert.alert("Error", "Failed to delete the journal entry");
+      } else {
+        Alert.alert("Success", "Journal entry deleted successfully");
+        // Remove the deleted journal from state
+        setJournalEntries((prevEntries) =>
+          prevEntries.filter((entry) => entry.id !== journalId)
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to delete the journal entry");
+    }
+  };
+
   return (
     <View style={styles.container}>
       {journalEntries.length > 0 ? (
         <FlatList
           data={journalEntries}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => handleEdit(item)}
+            >
               <Text style={styles.cardTitle}>{item.title}</Text>
               <Text style={styles.cardBody}>{item.body}</Text>
-            </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => handleEdit(item)}
+                >
+                  <Text style={styles.buttonText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => handleDelete(item.id)}
+                >
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={loading && <ActivityIndicator size="large" color="#3E4985" />}
+          ListFooterComponent={
+            loading && <ActivityIndicator size="large" color="#3E4985" />
+          }
         />
       ) : (
         <Text style={styles.noEntriesText}>No journal entries available.</Text>
@@ -101,6 +163,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666666",
     lineHeight: 24,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 10,
+  },
+  editButton: {
+    backgroundColor: "#AD40AF",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginLeft: 10,
+  },
+  deleteButton: {
+    backgroundColor: "#E74C3C",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginLeft: 10,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   noEntriesText: {
     marginTop: 20,

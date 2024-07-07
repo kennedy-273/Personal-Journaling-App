@@ -1,14 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, Pressable, Image, StyleSheet, Alert, TextInput, Button } from 'react-native';
-import { Card, Icon } from 'react-native-elements';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  Pressable,
+  Image,
+  StyleSheet,
+  Alert,
+  TextInput,
+  Button,
+} from "react-native";
+import { Card, Icon } from "react-native-elements";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SubmittedEntry = ({ route }) => {
   if (!route.params || !route.params.allEntries) {
     return (
       <View style={styles.noEntriesContainer}>
-        <Text style={styles.noEntriesText}>You haven't created any entries yet.</Text>
-        <Text style={styles.createEntryText}>To create an entry, go to the + New Entry tab.</Text>
+        <Text style={styles.noEntriesText}>
+          You haven't created any entries yet.
+        </Text>
+        <Text style={styles.createEntryText}>
+          To create an entry, go to the + New Entry tab.
+        </Text>
       </View>
     );
   }
@@ -28,61 +42,70 @@ const SubmittedEntry = ({ route }) => {
 
   const handleDelete = async (entryId) => {
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error('Token not found');
+        console.error("Token not found");
         return;
       }
 
-      const response = await fetch(`https://journal-backend-x445.onrender.com/journal/${entryId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `https://journal-backend-x445.onrender.com/journal${entryId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to delete entry');
+        throw new Error("Failed to delete entry");
       } else {
-        setSavedEntries(savedEntries.filter(entry => entry.id !== entryId));
-        Alert.alert('Journal Entry deleted successfully');
+        setSavedEntries(savedEntries.filter((entry) => entry.id !== entryId));
+        Alert.alert("Journal Entry deleted successfully");
       }
     } catch (error) {
-      console.error('Error deleting entry:', error);
-      Alert.alert('Error', 'Failed to delete entry');
+      console.error("Error deleting entry:", error);
+      Alert.alert("Error", "Failed to delete entry");
     }
   };
 
   const handleUpdate = async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error('Token not found');
+        console.error("Token not found");
         return;
       }
-
-      const response = await fetch(`https://journal-backend-x445.onrender.com/journal/${currentEntry.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(currentEntry),
-      });
+      const response = await fetch(
+        `https://journal-backend-x445.onrender.com/journal/${currentEntry.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(currentEntry),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Update failed');
+        throw new Error("Update failed");
       } else {
         const updatedEntry = await response.json();
-        setSavedEntries(savedEntries.map(entry => entry.id === updatedEntry.id ? updatedEntry : entry));
+        setSavedEntries(
+          savedEntries.map((entry) =>
+            entry.id === updatedEntry.id ? updatedEntry : entry
+          )
+        );
         setIsEditing(false);
         setCurrentEntry(null);
-        Alert.alert('Success', 'Entry updated successfully');
+        Alert.alert("Success", "Entry updated successfully");
       }
     } catch (error) {
-      console.error('Error updating entry:', error);
-      Alert.alert('Error', 'Failed to update entry');
+      console.error("Error updating entry:", error);
+      Alert.alert("Error", "Failed to update entry");
     }
   };
 
@@ -91,22 +114,25 @@ const SubmittedEntry = ({ route }) => {
     setCurrentEntry({ ...entry });
   };
 
-  const sortedEntries = savedEntries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const sortedEntries = savedEntries.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 
-  const submittedEntries = sortedEntries.map(entry => (
+  console.log(">>>>", isEditing, currentEntry);
+  const submittedEntries = sortedEntries.map((entry) => (
     <View key={entry.id} style={styles.entryContainer}>
       <Pressable
         onLongPress={() =>
           Alert.alert(
-            'Delete',
-            'Do you want to delete this entry?',
+            "Delete",
+            "Do you want to delete this entry?",
             [
               {
-                text: 'Cancel',
-                style: 'cancel',
+                text: "Cancel",
+                style: "cancel",
               },
               {
-                text: 'OK',
+                text: "OK",
                 onPress: () => handleDelete(entry.id),
               },
             ],
@@ -125,7 +151,7 @@ const SubmittedEntry = ({ route }) => {
           <Card.Divider />
           <Text style={styles.text}>{entry.body}</Text>
           {entry.images &&
-            entry.images.map(image => (
+            entry.images.map((image) => (
               <Image
                 key={image}
                 source={{ uri: image }}
@@ -134,8 +160,12 @@ const SubmittedEntry = ({ route }) => {
               />
             ))}
           <View style={styles.buttonContainer}>
-            <Button title="Edit" onPress={() => handleEdit(entry)} />
-            <Button title="Delete" onPress={() => handleDelete(entry.id)} color="red" />
+            <Button title="Badilisha" onPress={() => handleEdit(entry)} />
+            <Button
+              title="Delete"
+              onPress={() => handleDelete(entry.id)}
+              color="red"
+            />
           </View>
         </Card>
       </Pressable>
@@ -149,24 +179,30 @@ const SubmittedEntry = ({ route }) => {
           <TextInput
             style={styles.input}
             value={currentEntry.title}
-            onChangeText={(text) => handleChange('title', text)}
+            onChangeText={(text) => handleChange("title", text)}
             placeholder="Title"
           />
           <TextInput
             style={styles.input}
             value={currentEntry.body}
-            onChangeText={(text) => handleChange('body', text)}
+            onChangeText={(text) => handleChange("body", text)}
             placeholder="Body"
             multiline
           />
           <TextInput
             style={styles.input}
             value={currentEntry.category}
-            onChangeText={(text) => handleChange('category', text)}
+            onChangeText={(text) => handleChange("category", text)}
             placeholder="Category"
           />
           <Button title="Save" onPress={handleUpdate} />
-          <Button title="Cancel" onPress={() => { setIsEditing(false); setCurrentEntry(null); }} />
+          <Button
+            title="Cancel"
+            onPress={() => {
+              setIsEditing(false);
+              setCurrentEntry(null);
+            }}
+          />
         </View>
       ) : (
         submittedEntries
@@ -178,12 +214,12 @@ const SubmittedEntry = ({ route }) => {
 const styles = StyleSheet.create({
   noEntriesContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   noEntriesText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   createEntryText: {
     fontSize: 16,
@@ -194,37 +230,37 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   date: {
     fontSize: 14,
-    color: 'gray',
+    color: "gray",
   },
   text: {
     fontSize: 16,
     marginVertical: 10,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 200,
     marginVertical: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   editContainer: {
     padding: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 10,
     padding: 10,
     marginVertical: 10,
@@ -232,3 +268,10 @@ const styles = StyleSheet.create({
 });
 
 export default SubmittedEntry;
+
+
+/**
+ * Use navigatest to Home, they see all journals with Edit and delete buttons
+ * Use clicks on edit, they see a form with the journal details in the new page which expects the journal that needs editing
+ * User submits edit, on success, navigate back to home
+ */
