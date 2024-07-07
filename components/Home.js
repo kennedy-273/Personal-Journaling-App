@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import EditJournal from "./EditJournal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
@@ -15,6 +16,7 @@ const Home = ({ navigation }) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [entryToEdit, setEntryToEdit] = useState(null);
 
   useEffect(() => {
     fetchJournals();
@@ -56,9 +58,8 @@ const Home = ({ navigation }) => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const handleEdit = async (journalId) => {
-    navigation.navigate("JournalEntry", { journal });
-    // navigation.navigate("JournalEntry");
+  const handleEdit = async (journal) => {
+    setEntryToEdit(journal);
   };
 
   const handleDelete = async (journalId) => {
@@ -89,6 +90,16 @@ const Home = ({ navigation }) => {
       Alert.alert("Error", "Failed to delete the journal entry");
     }
   };
+
+  const handleOnCancel = () => {
+    setEntryToEdit(null);
+  };
+
+  if (entryToEdit?.id) {
+    return <EditJournal entry={entryToEdit} handleOnCancel={handleOnCancel} />;
+  }
+
+  console.log(">>>>>entryToEdit", entryToEdit);
 
   return (
     <View style={styles.container}>

@@ -25,6 +25,7 @@ import JournalEntry from "./components/JournalEntry";
 import CalendarComponent from "./components/Calendar";
 import SubmittedEntry from "./components/SubmittedEntry";
 import Login from "./components/Login";
+// import EditJournal from "./components/EditJournal";
 
 const Tab = createBottomTabNavigator();
 
@@ -86,6 +87,7 @@ const App = () => {
         <Tab.Screen name="New Entry" component={JournalEntry} />
         <Tab.Screen name="My Journal" component={SubmittedEntry} />
         <Tab.Screen name="Calendar" component={CalendarComponent} />
+        {/* <Tab.Screen name="EditJournal" component={EditJournal} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );
