@@ -11,11 +11,9 @@ import {
 import EditJournal from "./EditJournal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const [journalEntries, setJournalEntries] = useState([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState(null);
   const [entryToEdit, setEntryToEdit] = useState(null);
 
   useEffect(() => {
@@ -54,13 +52,17 @@ const Home = ({ navigation }) => {
     }
   };
 
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
   const handleEdit = async (journal) => {
     setEntryToEdit(journal);
   };
+
+  const updateEntry = (updatedEntry) => {
+    setJournalEntries((prevEntries) =>
+      prevEntries.map((entry) =>
+        entry.id === updatedEntry.id ? updatedEntry : entry
+      )
+    );
+  }
 
   const handleDelete = async (journalId) => {
     try {
@@ -96,10 +98,8 @@ const Home = ({ navigation }) => {
   };
 
   if (entryToEdit?.id) {
-    return <EditJournal entry={entryToEdit} handleOnCancel={handleOnCancel} />;
+    return <EditJournal entry={entryToEdit} handleOnCancel={handleOnCancel} updateEntry={updateEntry} />;
   }
-
-  console.log(">>>>>entryToEdit", entryToEdit);
 
   return (
     <View style={styles.container}>
@@ -130,8 +130,6 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
           ListFooterComponent={
             loading && <ActivityIndicator size="large" color="#3E4985" />
           }

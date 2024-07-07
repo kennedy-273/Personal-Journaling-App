@@ -13,7 +13,7 @@ import {
 import { Card, Icon } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const EditJournal = ({ entry, handleOnCancel }) => {
+const EditJournal = ({ entry, handleOnCancel, updateEntry}) => {
   if (!entry) {
     return (
       <View style={styles.noEntriesContainer}>
@@ -55,6 +55,7 @@ const EditJournal = ({ entry, handleOnCancel }) => {
         throw new Error("Update failed");
       } else {
         Alert.alert("Success", "Entry updated successfully");
+        updateEntry(currentEntry);
         handleOnCancel();
       }
     } catch (error) {
@@ -63,7 +64,6 @@ const EditJournal = ({ entry, handleOnCancel }) => {
     }
   };
 
-  console.log("currentEntry>>>>>>", currentEntry);
   return (
     <ScrollView>
       <View style={styles.editContainer}>

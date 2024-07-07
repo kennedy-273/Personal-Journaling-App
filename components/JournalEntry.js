@@ -42,9 +42,7 @@ const JournalEntry = ({ navigation }) => {
       console.error(error);
       Alert.alert('Error', 'Failed to save entry to backend');
     }
-    console.log('Entry saved:', entry);
-
-    navigation.navigate('My Journal', { allEntries });
+    navigation.navigate('Home', { allEntries });
 
     setNewEntryTitle('');
     setNewEntryCategory('');
