@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,12 +8,31 @@ import {
   StyleSheet,
 } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Signup = ({ navigation }) => {
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+const Login = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isLoginMode, setIsLoginMode] = useState(true);
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "https://journal-backend-x445.onrender.com/signin",
+        {
+          email,
+          password,
+        }
+      );
+      console.log(response);
+      await AsyncStorage.setItem("token", response.data.access_token);
+      navigation.navigate("Home");
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   const handleSignup = async () => {
     try {
@@ -27,38 +46,52 @@ const Signup = ({ navigation }) => {
         }
       );
       console.log(response);
-      // Redirect to Login screen after successful signup
-      navigation.replace("Login");
+      await AsyncStorage.setItem("token", response.data.access_token);
+      // After successful signup, switch to login mode
+      setIsLoginMode(true);
     } catch (error) {
-      if (error.response) {
-        console.log(">>>>", error.response.data);
-      } else if (error.request) {
-        console.log(">>>> Request made, no response:", error.request);
-      } else {
-        console.log(">>>> Error", error.message);
-      }
-      console.log(error.config);
+      handleError(error);
     }
+  };
+
+  const handleError = (error) => {
+    if (error.response) {
+      console.log(">>>>", error.response.data);
+    } else if (error.request) {
+      console.log(">>>> Request made, no response:", error.request);
+    } else {
+      console.log(">>>> Error", error.message);
+    }
+    console.log(error.config);
+  };
+
+  const toggleMode = () => {
+    // Toggle between login and signup modes
+    setIsLoginMode(!isLoginMode);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Signup</Text>
+        <Text style={styles.title}>{isLoginMode ? "Login" : "Sign Up"}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          onChangeText={setFirstName}
-          value={firstName}
-        />
+        {!isLoginMode && (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              onChangeText={setFirstName}
+              value={firstName}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          onChangeText={setLastName}
-          value={lastName}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              onChangeText={setLastName}
+              value={lastName}
+            />
+          </>
+        )}
 
         <TextInput
           style={styles.input}
@@ -76,14 +109,24 @@ const Signup = ({ navigation }) => {
           value={password}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Signup</Text>
-        </TouchableOpacity>
+        {isLoginMode ? (
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        )}
 
-        <View style={styles.loginContainer}>
-          <Text>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.loginText}> Login</Text>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchText}>
+            {isLoginMode ? "New to the app?" : "Already have an account?"}
+          </Text>
+          <TouchableOpacity onPress={toggleMode}>
+            <Text style={styles.switchButtonText}>
+              {isLoginMode ? "Sign Up" : "Login"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -131,16 +174,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  loginContainer: {
+  switchContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
   },
-  loginText: {
+  switchText: {
+    marginRight: 10,
+  },
+  switchButtonText: {
     color: "#AD40AF",
     fontWeight: "700",
   },
 });
 
-export default Signup;
+export default Login;
