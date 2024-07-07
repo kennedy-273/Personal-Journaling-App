@@ -20,12 +20,15 @@ import {
   Anton_400Regular,
 } from "@expo-google-fonts/anton";
 
+
+// import Register from "./components/Register"
 import HomeNavigator from "./HomeNavigator";
 import JournalEntry from "./components/JournalEntry";
 import CalendarComponent from "./components/Calendar";
 import SubmittedEntry from "./components/SubmittedEntry";
 import Login from "./components/Login";
-import Signup from "./components/signup";
+
+
 
 const Tab = createBottomTabNavigator();
 // if (!antonLoaded || !bioLoaded || !spaceLoaded || !bigLoaded) {

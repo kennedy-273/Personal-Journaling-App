@@ -8,13 +8,20 @@ const Stack = createStackNavigator();
 
 const HomeNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Signup">
+        <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+//     <Stack.Navigator
+// screenOptions={{headerShown: false,}}
+
+    
+//     >
+//       <Stack.Screen name="Home" component={HomeScreen} />
+//     </Stack.Navigator>
   );
 };
 

@@ -5,51 +5,36 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = ({ navigation }) => {
+const Signup = ({ navigation }) => {
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await axios.post("http://127.0.0.1:5500/signin", {
-  //       email,
-  //       password,
-  //     });
-  //     console.log(response);
-  //     await AsyncStorage.setItem("token", response.data.token);
-  //     navigation.navigate("Home");
-  //   } catch (error) {
-  //     console.log(">>>>", error.response.data);
-  //     console.log(error);
-  //   }
-  // };
-
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
       const response = await axios.post(
-        "https://journal-backend-x445.onrender.com/signin",
+        "https://journal-backend-x445.onrender.com/signup",
         {
+          first_name: firstName,
+          last_name: lastName,
           email,
           password,
         }
       );
       console.log(response);
-      await AsyncStorage.setItem("token", response.data.access_token);
-      navigation.navigate("Home");
+      // Redirect to Login screen after successful signup
+      navigation.replace("Login");
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.log(">>>>", error.response.data);
       } else if (error.request) {
-        // The request was made but no response was received
         console.log(">>>> Request made, no response:", error.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
         console.log(">>>> Error", error.message);
       }
       console.log(error.config);
@@ -57,76 +42,48 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-      <View style={{ paddingHorizontal: 25 }}>
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={{
-              fontFamily: "Roboto-Medium",
-              fontSize: 28,
-              fontWeight: "500",
-              color: "#333",
-              marginBottom: 30,
-            }}
-          >
-            Login
-          </Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>Signup</Text>
 
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "#ddd",
-              borderRadius: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              marginBottom: 20,
-            }}
-            placeholder="Email"
-            keyboardType="email-address"
-            onChangeText={setEmail}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          onChangeText={setFirstName}
+          value={firstName}
+        />
 
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "#ddd",
-              borderRadius: 10,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              marginBottom: 20,
-            }}
-            placeholder="Password"
-            secureTextEntry={true}
-            onChangeText={setPassword}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          onChangeText={setLastName}
+          value={lastName}
+        />
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#AD40AF",
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-              marginBottom: 20,
-            }}
-            onPress={handleLogin}
-          >
-            <Text style={{ color: "#fff", textAlign: "center" }}>Login</Text>
-          </TouchableOpacity>
-        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          keyboardType="email-address"
+          onChangeText={setEmail}
+          value={email}
+        />
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginBottom: 30,
-          }}
-        >
-          <Text>New to the app?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-            <Text style={{ color: "#AD40AF", fontWeight: "700" }}>
-              {" "}
-              Register
-            </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={true}
+          onChangeText={setPassword}
+          value={password}
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Signup</Text>
+        </TouchableOpacity>
+
+        <View style={styles.loginContainer}>
+          <Text>Already have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.loginText}> Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -134,4 +91,56 @@ const Login = ({ navigation }) => {
   );
 };
 
-export default Login;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "#f8f8f8",
+  },
+  innerContainer: {
+    paddingHorizontal: 25,
+    alignItems: "center",
+  },
+  title: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 28,
+    fontWeight: "500",
+    color: "#333",
+    marginBottom: 30,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 20,
+    width: "100%",
+    backgroundColor: "#fff",
+  },
+  button: {
+    backgroundColor: "#AD40AF",
+    borderRadius: 10,
+    paddingVertical: 15,
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  loginText: {
+    color: "#AD40AF",
+    fontWeight: "700",
+  },
+});
+
+export default Signup;
