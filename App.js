@@ -20,27 +20,14 @@ import {
   Anton_400Regular,
 } from "@expo-google-fonts/anton";
 
-
 import HomeNavigator from "./HomeNavigator";
 import JournalEntry from "./components/JournalEntry";
 import CalendarComponent from "./components/Calendar";
 import SubmittedEntry from "./components/SubmittedEntry";
 import Login from "./components/Login";
 
-
-
-
 const Tab = createBottomTabNavigator();
-// if (!antonLoaded || !bioLoaded || !spaceLoaded || !bigLoaded) {
-//     console.log(
-//       "Loading >>>>>>>>...",
-//       antonLoaded,
-//       bioLoaded,
-//       spaceLoaded,
-//       bigLoaded
-//     );
-//     return <AppLoading />;
-//   } else {
+
 const App = () => {
   useAnton({
     Anton_400Regular,
@@ -59,23 +46,15 @@ const App = () => {
     BigShouldersDisplay_700Bold,
   });
 
-  // if (!antonLoaded || !bioLoaded || !spaceLoaded || !bigLoaded) {
-  //   console.log(
-  //     "Loading >>>>>>>>...",
-  //     antonLoaded,
-  //     bioLoaded,
-  //     spaceLoaded,
-  //     bigLoaded
-  //   );
-  //   return <AppLoading />;
-  // } else {
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => {
             let iconName;
-            if (route.name === "Home") {
+            if (route.name === "Login") {
+              iconName = "log-in";
+            } else if (route.name === "Home") {
               iconName = "home";
             } else if (route.name === "New Entry") {
               iconName = "add-circle";
@@ -110,7 +89,6 @@ const App = () => {
       </Tab.Navigator>
     </NavigationContainer>
   );
-  // }
 };
 
 const fonts = {
@@ -126,8 +104,8 @@ const colors = {
   yellow: "#FFD32D",
   mint: "#C1F8CF",
   turquoise: "#4FD3C4",
-  midnightBlue: "#3E4985",
-  cobaltBlue: "#488FB1",
+  midnightBlue: "#AD40AF",
+  cobaltBlue: "#AD40AF",
 };
 
 export default App;

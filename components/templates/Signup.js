@@ -26,11 +26,9 @@ const Signup = ({ navigation }) => {
           password,
         }
       );
-      navigate('/login')
-      
       console.log(response);
-      // Redirect to Login screen after successful signup
-      navigation.replace("Login");
+      // Redirect to Home screen after successful signup
+      navigation.navigate("Home");
     } catch (error) {
       if (error.response) {
         console.log(">>>>", error.response.data);
@@ -84,8 +82,8 @@ const Signup = ({ navigation }) => {
 
         <View style={styles.loginContainer}>
           <Text>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.loginText}> Login</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Text style={styles.loginText}> Home</Text>
           </TouchableOpacity>
         </View>
       </View>

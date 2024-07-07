@@ -50,7 +50,7 @@ const SubmittedEntry = ({ route }) => {
       }
     } catch (error) {
       console.error('Error deleting entry:', error);
-      Alert.alert('Error', 'Failed to delete entry, give it another try.');
+      Alert.alert('Error', 'Failed to delete entry');
     }
   };
 
