@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
   Text,
-  Pressable,
-  Image,
   StyleSheet,
   Alert,
   TextInput,
-  Button,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import { Card, Icon } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const EditJournal = ({ entry, handleOnCancel, updateEntry}) => {
+const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
   if (!entry) {
     return (
       <View style={styles.noEntriesContainer}>
-        <Text style={styles.noEntriesText}>Journal etry not found</Text>
+        <Text style={styles.noEntriesText}>Journal entry not found</Text>
         <Text style={styles.createEntryText}>
           To create an entry, go to the + New Entry tab.
         </Text>
-        <Button title="Cancel" onPress={handleOnCancel} />
+        <TouchableOpacity style={styles.button} onPress={handleOnCancel}>
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -65,7 +65,7 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry}) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.editContainer}>
         <TextInput
           style={styles.input}
@@ -84,72 +84,100 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry}) => {
           style={styles.input}
           value={currentEntry.category}
           onChangeText={(text) => handleChange("category", text)}
-          placeholder="Category"
+          placeholder="Body"
         />
-        <Button title="Update" onPress={handleUpdate} />
-        <Button title="Cancel" onPress={handleOnCancel} />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.primaryButton} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.secondaryButton} onPress={handleOnCancel}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
 };
 
+const colors = {
+  background: "#F5F5F5",
+  inputBorder: "#CCCCCC",
+  primaryButton: "#AD40AF", // Same color as "Add Journal" button
+  secondaryButton: "#E74C3C", // Different color for Cancel button
+  buttonText: "#FFFFFF",
+  text: "#333333",
+};
+
+const fonts = {
+  regular: "System",
+  bold: "System",
+};
+
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: colors.background,
+  },
   noEntriesContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 16,
   },
   noEntriesText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: fonts.bold,
+    color: colors.text,
   },
   createEntryText: {
     fontSize: 16,
+    fontFamily: fonts.regular,
+    color: colors.text,
     marginTop: 10,
-  },
-  entryContainer: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  date: {
-    fontSize: 14,
-    color: "gray",
-  },
-  text: {
-    fontSize: 16,
-    marginVertical: 10,
-  },
-  image: {
-    width: "100%",
-    height: 200,
-    marginVertical: 10,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    textAlign: "center",
   },
   editContainer: {
     padding: 20,
+    backgroundColor: colors.background,
   },
   input: {
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: colors.inputBorder,
     borderRadius: 10,
     padding: 10,
     marginVertical: 10,
+    fontFamily: fonts.regular,
+    fontSize: 16,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  primaryButton: {
+    backgroundColor: colors.primaryButton,
+    borderRadius: 9,
+    paddingHorizontal: 46,
+    paddingVertical: 12,
+    marginHorizontal: 8,
+  },
+  secondaryButton: {
+    backgroundColor: colors.secondaryButton,
+    borderRadius: 9,
+    paddingHorizontal: 46,
+    paddingVertical: 12,
+    marginHorizontal: 8,
+  },
+  buttonText: {
+    color: colors.buttonText,
+    fontFamily: fonts.bold,
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 
 export default EditJournal;
+
 
 /**
  * Use navigatest to Home, they see all journals with Edit and delete buttons

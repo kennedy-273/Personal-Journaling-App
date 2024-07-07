@@ -64,12 +64,11 @@ const JournalEntry = ({ navigation }) => {
     setNewEntryCategory("");
     setNewEntryBody("");
     setPreviewModal(false);
-    // Alert.alert("Journal entry submitted");
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ flexDirection: "column" }}>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Title:</Text>
         <TextInput
           style={styles.input}
@@ -92,8 +91,8 @@ const JournalEntry = ({ navigation }) => {
           <Picker.Item label="Travel" value="Travel" />
         </Picker>
       </View>
-
-      <View style={{ margin: 10 }}>
+      <Text style={styles.label}>Journals:</Text>
+      <View style={styles.bodyContainer}>
         <TextInput
           style={styles.textarea}
           onChangeText={(text) => setNewEntryBody(text)}
@@ -112,6 +111,7 @@ const JournalEntry = ({ navigation }) => {
         containerStyle={styles.logButtonContainer}
         onPress={() => setPreviewModal(true)}
       />
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -120,22 +120,20 @@ const JournalEntry = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => setPreviewModal(!previewModal)}>
-              <Icon name="close" size={30} />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Submit Your Journal Entry:</Text>
+            <Text style={styles.modalTitle}>Submit Your Journal Entry</Text>
             <View style={styles.modalButtonRow}>
-              <Button
-                title="Submit"
-                buttonStyle={styles.submitButton}
-                containerStyle={styles.submitButtonContainer}
-                onPress={handleSubmitEntry}
-              />
+
               <Button
                 title="Cancel"
                 buttonStyle={styles.cancelButton}
                 containerStyle={styles.cancelButtonContainer}
                 onPress={() => setPreviewModal(false)}
+              />
+              <Button
+                title="Submit"
+                buttonStyle={styles.submitButton}
+                containerStyle={styles.submitButtonContainer}
+                onPress={handleSubmitEntry}
               />
             </View>
           </View>
@@ -165,6 +163,9 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.background,
   },
+  inputContainer: {
+    marginBottom: 20,
+  },
   label: {
     fontFamily: fonts.bold,
     color: colors.text,
@@ -187,6 +188,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
+  bodyContainer: {
+    marginBottom: 10,
+  },
   textarea: {
     backgroundColor: colors.inputBackground,
     padding: 10,
@@ -194,6 +198,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 16,
     borderRadius: 5,
+    textAlignVertical: 'top',
+    height: 120,
+    
   },
   logButton: {
     backgroundColor: colors.primary,
@@ -237,7 +244,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: colors.secondary,
-    borderRadius: 5,
+    borderRadius: 30,
   },
   submitButtonContainer: {
     flex: 1,
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: colors.cancel,
-    borderRadius: 5,
+    borderRadius: 30,
   },
   cancelButtonContainer: {
     flex: 1,

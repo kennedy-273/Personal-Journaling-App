@@ -14,10 +14,7 @@ import { JournalContext } from "../context/JournalContext";
 
 const Home = ({ navigation, route }) => {
   const [journalEntries, setJournalEntries] = useState([]);
-  // const [loading, setLoading] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState(null);
-
-
 
   const handleEdit = async (journal) => {
     setEntryToEdit(journal);
@@ -86,10 +83,7 @@ const Home = ({ navigation, route }) => {
         <FlatList
           data={journalEntries}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => handleEdit(item)}
-            >
+            <View style={styles.card}>
               <Text style={styles.cardTitle}>{item.title}</Text>
               <Text style={styles.cardBody}>{item.body}</Text>
               <View style={styles.buttonContainer}>
@@ -106,11 +100,11 @@ const Home = ({ navigation, route }) => {
                   <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
           ListFooterComponent={
-            loading && <ActivityIndicator size="large" color="#3E4985" />
+            loading && <ActivityIndicator size="large" color={colors.primary} />
           }
         />
       ) : (
@@ -120,19 +114,32 @@ const Home = ({ navigation, route }) => {
   );
 };
 
+const colors = {
+  background: "#F5F5F5",
+  cardBackground: "#FFFFFF",
+  cardShadow: "#000000",
+  cardTitle: "#333333",
+  cardBody: "#666666",
+  buttonText: "#FFFFFF",
+  editButton: "#AD40AF",
+  deleteButton: "#E74C3C",
+  noEntriesText: "#3E4985",
+  primary: "#AD40AF",
+};
+
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    padding: 16,
+    backgroundColor: colors.background,
   },
   card: {
     width: "100%",
     marginBottom: 16,
     padding: 16,
     borderRadius: 10,
-    backgroundColor: "#FFF",
-    shadowColor: "#000",
+    backgroundColor: colors.cardBackground,
+    shadowColor: colors.cardShadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -144,12 +151,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333333",
+    color: colors.cardTitle,
   },
   cardBody: {
     marginTop: 8,
     fontSize: 16,
-    color: "#666666",
+    color: colors.cardBody,
     lineHeight: 24,
   },
   buttonContainer: {
@@ -158,27 +165,27 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   editButton: {
-    backgroundColor: "#AD40AF",
+    backgroundColor: colors.editButton,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginLeft: 10,
   },
   deleteButton: {
-    backgroundColor: "#E74C3C",
+    backgroundColor: colors.deleteButton,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginLeft: 10,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: colors.buttonText,
     fontWeight: "bold",
     fontSize: 16,
   },
   noEntriesText: {
     marginTop: 20,
-    color: "#3E4985",
+    color: colors.noEntriesText,
     fontSize: 20,
     textAlign: "center",
   },
