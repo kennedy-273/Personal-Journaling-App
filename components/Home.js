@@ -17,41 +17,7 @@ const Home = ({ navigation, route }) => {
   // const [loading, setLoading] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState(null);
 
-  // useEffect(() => {
-  //   fetchJournals();
-  // }, []);
 
-  // const fetchJournals = async () => {
-  //   if (loading) return;
-  //   setLoading(true);
-
-  //   try {
-  //     const token = await AsyncStorage.getItem("token");
-  //     const response = await fetch(
-  //       "https://journal-backend-x445.onrender.com/journals",
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status !== 200) {
-  //       console.log("Failed to fetch journal entries", response.status);
-  //       Alert.alert("Error", "Failed to fetch journal entries");
-  //     } else {
-  //       const journals = await response.json();
-  //       setJournalEntries((prevEntries) => [...prevEntries, ...journals]);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert("Error", "Failed to fetch journal entries");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleEdit = async (journal) => {
     setEntryToEdit(journal);

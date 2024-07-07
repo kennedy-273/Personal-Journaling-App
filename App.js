@@ -22,8 +22,8 @@ import {
 
 import HomeNavigator from "./HomeNavigator";
 import JournalEntry from "./components/JournalEntry";
-import CalendarComponent from "./components/Calendar";
-import SubmittedEntry from "./components/SubmittedEntry";
+// import CalendarComponent from "./components/Calendar";
+// import SubmittedEntry from "./components/SubmittedEntry";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import SignOut from "./components/SignOut";
