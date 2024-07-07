@@ -1,26 +1,95 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import React from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import axios from "axios";
 
-const Profile = () => {
+const Signup = ({ navigation }) => {
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const handleSignup = async () => {
+    try {
+      const response = await axios.post(
+        "https://journal-backend-x445.onrender.com/signup",
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+        }
+      );
+      console.log(response);
+      // Redirect to Home screen after successful signup
+      navigation.navigate("Home");
+    } catch (error) {
+      if (error.response) {
+        console.log(">>>>", error.response.data);
+      } else if (error.request) {
+        console.log(">>>> Request made, no response:", error.request);
+      } else {
+        console.log(">>>> Error", error.message);
+      }
+      console.log(error.config);
+    }
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image 
-          source={{uri: 'https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg'}} 
-          style={styles.profileImage} 
+        <Text style={styles.title}>Signup</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          onChangeText={setFirstName}
+          value={firstName}
         />
-        <View style={styles.detailsContainer}>
-          <Text style={styles.detailLabel}>First Name:</Text>
-          <Text style={styles.detailItem}>John</Text>
-          <Text style={styles.detailLabel}>Last Name:</Text>
-          <Text style={styles.detailItem}>Doe</Text>
-          <Text style={styles.detailLabel}>Email:</Text>
-          <Text style={styles.detailItem}>john.doe@example.com</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          onChangeText={setLastName}
+          value={lastName}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          keyboardType="email-address"
+          onChangeText={setEmail}
+          value={email}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={true}
+          onChangeText={setPassword}
+          value={password}
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Signup</Text>
+        </TouchableOpacity>
+
+        <View style={styles.loginContainer}>
+          <Text>Already have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Text style={styles.loginText}> Home</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -31,26 +100,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     paddingHorizontal: 25,
     alignItems: "center",
-  },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 30,
-  },
-  detailsContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    alignItems: 'flex-start',
-  },
-  detailLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  detailItem: {
-    fontSize: 16,
-    marginBottom: 20,
   },
   title: {
     fontFamily: "Roboto-Medium",
@@ -94,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default Signup;
