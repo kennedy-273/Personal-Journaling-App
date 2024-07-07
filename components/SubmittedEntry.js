@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Pressable, Image, StyleSheet, Alert, TextInput, Button } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SubmittedEntry = ({ route }) => {
   if (!route.params || !route.params.allEntries) {
@@ -21,32 +22,55 @@ const SubmittedEntry = ({ route }) => {
     setSavedEntries(allEntries);
   }, [allEntries]);
 
+  const handleChange = (key, value) => {
+    setCurrentEntry({ ...currentEntry, [key]: value });
+  };
+
   const handleDelete = async (entryId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5500/journal/${entryId}`, {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.error('Token not found');
+        return;
+      }
+
+      const response = await fetch(`https://journal-backend-x445.onrender.com/journal/${entryId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
+
       if (!response.ok) {
-        throw new Error('Delete failed');
+        throw new Error('Failed to delete entry');
       } else {
         setSavedEntries(savedEntries.filter(entry => entry.id !== entryId));
-        Alert.alert('Entry deleted successfully');
+        Alert.alert('Journal Entry deleted successfully');
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to delete entry');
+      console.error('Error deleting entry:', error);
+      Alert.alert('Error', 'Failed to delete entry, give it another try.');
     }
   };
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5500/journal/${currentEntry.id}`, {
-        method: 'PUT',
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.error('Token not found');
+        return;
+      }
+
+      const response = await fetch(`https://journal-backend-x445.onrender.com/journal/${currentEntry.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(currentEntry),
       });
+
       if (!response.ok) {
         throw new Error('Update failed');
       } else {
@@ -54,10 +78,10 @@ const SubmittedEntry = ({ route }) => {
         setSavedEntries(savedEntries.map(entry => entry.id === updatedEntry.id ? updatedEntry : entry));
         setIsEditing(false);
         setCurrentEntry(null);
-        Alert.alert('Entry updated successfully');
+        Alert.alert('Success', 'Entry updated successfully');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error updating entry:', error);
       Alert.alert('Error', 'Failed to update entry');
     }
   };
@@ -67,12 +91,10 @@ const SubmittedEntry = ({ route }) => {
     setCurrentEntry({ ...entry });
   };
 
-  const handleChange = (key, value) => {
-    setCurrentEntry({ ...currentEntry, [key]: value });
-  };
+  const sortedEntries = savedEntries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  const submittedEntries = savedEntries.map(entry => (
-    <View key={entry.id}>
+  const submittedEntries = sortedEntries.map(entry => (
+    <View key={entry.id} style={styles.entryContainer}>
       <Pressable
         onLongPress={() =>
           Alert.alert(
@@ -97,11 +119,11 @@ const SubmittedEntry = ({ route }) => {
         <Card>
           <Card.Title style={styles.title}>{entry.title}</Card.Title>
           <View style={styles.header}>
-            <Text style={styles.date}>{entry.date}</Text>
+            <Text style={styles.date}>{entry.created_at}</Text>
             <Icon size={35} name={entry.mood?.name} color={entry.mood?.color} />
           </View>
           <Card.Divider />
-          <Text style={styles.text}>{entry.text}</Text>
+          <Text style={styles.text}>{entry.body}</Text>
           {entry.images &&
             entry.images.map(image => (
               <Image
@@ -111,7 +133,10 @@ const SubmittedEntry = ({ route }) => {
                 resizeMode="cover"
               />
             ))}
-          <Button title="Edit" onPress={() => handleEdit(entry)} />
+          <View style={styles.buttonContainer}>
+            <Button title="Edit" onPress={() => handleEdit(entry)} />
+            <Button title="Delete" onPress={() => handleDelete(entry.id)} color="red" />
+          </View>
         </Card>
       </Pressable>
     </View>
@@ -129,10 +154,16 @@ const SubmittedEntry = ({ route }) => {
           />
           <TextInput
             style={styles.input}
-            value={currentEntry.text}
-            onChangeText={(text) => handleChange('text', text)}
-            placeholder="Text"
+            value={currentEntry.body}
+            onChangeText={(text) => handleChange('body', text)}
+            placeholder="Body"
             multiline
+          />
+          <TextInput
+            style={styles.input}
+            value={currentEntry.category}
+            onChangeText={(text) => handleChange('category', text)}
+            placeholder="Category"
           />
           <Button title="Save" onPress={handleUpdate} />
           <Button title="Cancel" onPress={() => { setIsEditing(false); setCurrentEntry(null); }} />
@@ -158,9 +189,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
   },
+  entryContainer: {
+    marginBottom: 20,
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
   header: {
     flexDirection: 'row',
@@ -180,13 +215,17 @@ const styles = StyleSheet.create({
     height: 200,
     marginVertical: 10,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   editContainer: {
     padding: 20,
   },
   input: {
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
     marginVertical: 10,
   },
