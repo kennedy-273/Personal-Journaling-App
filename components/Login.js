@@ -6,9 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image, // Import Image component
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Default profile image URL
+const defaultProfileImageUrl = "https://cdn.pixabay.com/photo/2019/01/14/10/23/glass-ball-3931999_640.jpg";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +26,7 @@ const Login = ({ navigation }) => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
       if (token) {
-        navigation.navigate("Home");
+        navigation.replace('Main');
       }
     };
 
@@ -85,6 +89,9 @@ const Login = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {/* Display default image */}
+        <Image source={{ uri: defaultProfileImageUrl }} style={styles.profileImage} />
+
         <Text style={styles.title}>{isLoginMode ? "Login" : "Sign Up"}</Text>
 
         {!isLoginMode && (
@@ -202,6 +209,12 @@ const styles = StyleSheet.create({
   error: {
     color: "red",
     fontSize: 16,
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     marginBottom: 20,
   },
 });
