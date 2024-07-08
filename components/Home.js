@@ -16,7 +16,7 @@ const Home = ({ navigation, route }) => {
   const [journalEntries, setJournalEntries] = useState([]);
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [entryToEdit, setEntryToEdit] = useState(null);
-  const [filter, setFilter] = useState('All'); 
+  const [filter, setFilter] = useState('All');
 
   const handleEdit = (journal) => {
     setEntryToEdit(journal);
@@ -62,14 +62,21 @@ const Home = ({ navigation, route }) => {
     setEntryToEdit(null);
   };
 
-  const { loading, journals } = useContext(JournalContext);
+  const { loading, journals, error } = useContext(JournalContext);
 
   useEffect(() => {
-    setJournalEntries(journals);
-  }, [journals]);
+    if (error) {
+      Alert.alert("Error", "Failed to fetch journal entries");
+      console.error("Error fetching journal entries:", error);
+    } else {
+      setJournalEntries(journals);
+    }
+  }, [journals, error]);
 
   useEffect(() => {
-    applyFilter(filter);
+    if (journalEntries) {
+      applyFilter(filter);
+    }
   }, [journalEntries, filter]);
 
   const applyFilter = (filter) => {
@@ -102,6 +109,7 @@ const Home = ({ navigation, route }) => {
         });
         break;
       default:
+        filtered = journalEntries;
         break;
     }
 
@@ -131,7 +139,9 @@ const Home = ({ navigation, route }) => {
           </TouchableOpacity>
         ))}
       </View>
-      {filteredEntries.length > 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : filteredEntries && filteredEntries.length > 0 ? (
         <FlatList
           data={filteredEntries}
           renderItem={({ item }) => (
@@ -154,10 +164,7 @@ const Home = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          keyExtractor={(item) => item.id.toString()} 
-          ListFooterComponent={
-            loading && <ActivityIndicator size="large" color={colors.primary} />
-          }
+          keyExtractor={(item) => item.id.toString()}
         />
       ) : (
         <Text style={styles.noEntriesText}>No journal entries available.</Text>
@@ -271,6 +278,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
 
 export default Home;

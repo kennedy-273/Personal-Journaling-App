@@ -31,11 +31,11 @@ const Signup = ({ navigation }) => {
       navigation.navigate("Home");
     } catch (error) {
       if (error.response) {
-        console.log(">>>>", error.response.data);
+        // console.log(">>>>", error.response.data);
       } else if (error.request) {
-        console.log(">>>> Request made, no response:", error.request);
+        // console.log(">>>> Request made, no response:", error.request);
       } else {
-        console.log(">>>> Error", error.message);
+        // console.log(">>>> Error", error.message);
       }
       console.log(error.config);
     }
@@ -44,7 +44,7 @@ const Signup = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Signup</Text>
+        {/* <Text style={styles.title}>Signup</Text> */}
 
         <TextInput
           style={styles.input}
