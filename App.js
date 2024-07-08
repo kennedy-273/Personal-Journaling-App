@@ -30,6 +30,7 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import SignOut from "./components/SignOut";
 import { JournalProvider } from "./context/JornalContextProvider";
+import JournalDetails from "./components/JournalDetails";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -114,6 +115,7 @@ const App = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Main" component={TabNavigator} />
+          <Stack.Screen name="JournalDetails" component={JournalDetails} />
         </Stack.Navigator>
       </NavigationContainer>
     </JournalProvider>

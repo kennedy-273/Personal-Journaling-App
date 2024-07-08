@@ -12,11 +12,11 @@ import EditJournal from "./EditJournal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { JournalContext } from "../context/JournalContext";
 
-const Home = ({ navigation, route }) => {
+const Home = ({ navigation }) => {
   const [journalEntries, setJournalEntries] = useState([]);
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [entryToEdit, setEntryToEdit] = useState(null);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState("All");
 
   const handleEdit = (journal) => {
     setEntryToEdit(journal);
@@ -84,25 +84,25 @@ const Home = ({ navigation, route }) => {
     let filtered = journalEntries;
 
     switch (filter) {
-      case 'Today':
+      case "Today":
         filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date); 
+          const entryDate = new Date(entry.date);
           return entryDate.toDateString() === now.toDateString();
         });
         break;
-      case 'Week':
+      case "Week":
         const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
         const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
         filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date); 
+          const entryDate = new Date(entry.date);
           return entryDate >= startOfWeek && entryDate <= endOfWeek;
         });
         break;
-      case 'Month':
+      case "Month":
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date); 
+          const entryDate = new Date(entry.date);
           return entryDate >= startOfMonth && entryDate <= endOfMonth;
         });
         break;
@@ -112,6 +112,14 @@ const Home = ({ navigation, route }) => {
     }
 
     setFilteredEntries(filtered);
+  };
+
+  const handlePressJournal = (journal) => {
+    navigation.navigate("JournalDetails", {
+      title: journal.title,
+      body: journal.body,
+      category: journal.category,
+    });
   };
 
   if (entryToEdit?.id) {
@@ -127,10 +135,13 @@ const Home = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
-        {['All', 'Today', 'Week', 'Month'].map((category) => (
+        {["All", "Today", "Week", "Month"].map((category) => (
           <TouchableOpacity
             key={category}
-            style={[styles.filterButton, filter === category && styles.activeFilter]}
+            style={[
+              styles.filterButton,
+              filter === category && styles.activeFilter,
+            ]}
             onPress={() => setFilter(category)}
           >
             <Text style={styles.filterText}>{category}</Text>
@@ -143,7 +154,10 @@ const Home = ({ navigation, route }) => {
         <FlatList
           data={filteredEntries}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() => handlePressJournal(item)}
+            >
               <Text style={styles.cardTitle}>{item.title}</Text>
               <Text style={styles.cardBody}>{item.body}</Text>
               <View style={styles.buttonContainer}>
@@ -160,7 +174,7 @@ const Home = ({ navigation, route }) => {
                   <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           keyExtractor={(item) => item.id.toString()}
         />
@@ -182,8 +196,8 @@ const colors = {
   deleteButton: "#E74C3C",
   noEntriesText: "#3E4985",
   primary: "#AD40AF",
-  filterButton: "#D3D3D3", 
-  activeFilter: "#AD40AF", 
+  filterButton: "#D3D3D3",
+  activeFilter: "#AD40AF",
   filterText: "#333333",
 };
 
@@ -194,29 +208,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
     paddingHorizontal: 10,
     paddingTop: 10,
     paddingBottom: 5,
   },
   filterButton: {
-    flex: 1, 
+    flex: 1,
     backgroundColor: colors.filterButton,
     borderRadius: 8,
     paddingVertical: 10,
-    marginHorizontal: 5, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    marginHorizontal: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeFilter: {
     backgroundColor: colors.activeFilter,
   },
   filterText: {
     color: colors.filterText,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   card: {
