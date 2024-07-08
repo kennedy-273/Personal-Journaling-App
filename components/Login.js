@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -6,9 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image, // Import Image component
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Default profile image URL
+const defaultProfileImageUrl = "https://cdn.pixabay.com/photo/2019/01/14/10/23/glass-ball-3931999_640.jpg";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -16,6 +20,18 @@ const Login = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        navigation.replace('Main');
+      }
+    };
+
+    checkToken();
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -26,11 +42,10 @@ const Login = ({ navigation }) => {
           password,
         }
       );
-      console.log(response);
       await AsyncStorage.setItem("token", response.data.access_token);
-      
       navigation.navigate("Home");
     } catch (error) {
+      setError("Login failed. Please check your credentials.");
       handleError(error);
     }
   };
@@ -46,34 +61,37 @@ const Login = ({ navigation }) => {
           password,
         }
       );
-      console.log(response);
       await AsyncStorage.setItem("token", response.data.access_token);
-      // After successful signup, switch to login mode
       setIsLoginMode(true);
     } catch (error) {
+      setError("Sign up failed. Please try again.");
       handleError(error);
     }
   };
 
   const handleError = (error) => {
     if (error.response) {
-      console.log(">>>>", error.response.data);
+      // console.log(">>>>", error.response.data);
     } else if (error.request) {
-      console.log(">>>> Request made, no response:", error.request);
+      // console.log(">>>> Request made, no response:", error.request);
     } else {
-      console.log(">>>> Error", error.message);
+      // console.log(">>>> Error", error.message);
     }
     console.log(error.config);
   };
 
   const toggleMode = () => {
-    // Toggle between login and signup modes
+    setError("");
     setIsLoginMode(!isLoginMode);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {/* Display default image */}
+        <Image source={{ uri: defaultProfileImageUrl }} style={styles.profileImage} />
+
         <Text style={styles.title}>{isLoginMode ? "Login" : "Sign Up"}</Text>
 
         {!isLoginMode && (
@@ -96,7 +114,7 @@ const Login = ({ navigation }) => {
 
         <TextInput
           style={styles.input}
-          placeholder="emailadress@gmail.com"
+          placeholder="emailaddress@gmail.com"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
@@ -187,6 +205,17 @@ const styles = StyleSheet.create({
   switchButtonText: {
     color: "#AD40AF",
     fontWeight: "700",
+  },
+  error: {
+    color: "red",
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
   },
 });
 

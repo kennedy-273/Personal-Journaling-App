@@ -1,135 +1,183 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
-// import { launchImageLibrary } from 'react-native-image-picker';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
+  Alert,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = () => {
-  const [firstName, setFirstName] = useState('John');
-  const [lastName, setLastName] = useState('Doe');
-  const [email, setEmail] = useState('john.doe@example.com');
-  const [profileImage, setProfileImage] = useState('https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg');
+  const [user, setUser] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedProfile, setEditedProfile] = useState({
+    firstName: "",
+    lastName: "",
+    oldPassword: "",
+    newPassword: "",
+  });
 
-  const handleImagePicker = () => {
-    launchImageLibrary({ mediaType: 'photo' }, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.assets && response.assets.length > 0) {
-        setProfileImage(response.assets[0].uri);
-      }
-    });
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setEditedProfile({
+        firstName: user.first_name,
+        lastName: user.last_name,
+        oldPassword: "",
+        newPassword: "",
+      });
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await fetch("https://journal-backend-x445.onrender.com/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setUser(data);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
   };
 
-  const handleSaveProfile = () => {
-    // Here, you can handle saving the profile details, e.g., sending them to a backend server.
-    console.log('Profile Saved:', { firstName, lastName, email, profileImage });
+  const handleEditProfile = () => setEditMode(true);
+
+  const handleSaveProfile = async () => {
+    if (editedProfile.oldPassword === "" || editedProfile.newPassword === "") {
+      Alert.alert("Please enter your old and new passwords.");
+      return;
+    }
+
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("first_name", editedProfile.firstName);
+      formData.append("last_name", editedProfile.lastName);
+      formData.append("old_password", editedProfile.oldPassword);
+      formData.append("new_password", editedProfile.newPassword);
+
+      const response = await fetch("https://journal-backend-x445.onrender.com/user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      setUser(data);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+    }
+  };
+
+  const handleInputChange = (name, value) => {
+    setEditedProfile({ ...editedProfile, [name]: value });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.profileContainer}>
-      <View style={styles.profileInnerContainer}>
-        <TouchableOpacity onPress={handleImagePicker}>
-          <Image 
-            source={{ uri: profileImage }} 
-            style={styles.profileImage} 
-          />
-        </TouchableOpacity>
-        <View style={styles.profileDetailsContainer}>
-          <Text style={styles.profileDetailLabel}>First Name:</Text>
-          <TextInput 
-            style={styles.profileInput} 
-            placeholder="First Name" 
-            value={firstName} 
-            onChangeText={setFirstName} 
-          />
-          <Text style={styles.profileDetailLabel}>Last Name:</Text>
-          <TextInput 
-            style={styles.profileInput} 
-            placeholder="Last Name" 
-            value={lastName} 
-            onChangeText={setLastName} 
-          />
-          <Text style={styles.profileDetailLabel}>Email:</Text>
-          <TextInput 
-            style={styles.profileInput} 
-            placeholder="Email" 
-            value={email} 
-            onChangeText={setEmail} 
-          />
-        </View>
-        <TouchableOpacity style={styles.profileButton} onPress={handleSaveProfile}>
-          <Text style={styles.profileButtonText}>Save Profile</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      {user && (
+        <>
+          <Image source={{ uri: user.image }} style={styles.profileImage} />
+          {editMode ? (
+            <>
+              <TextInput
+                value={editedProfile.firstName}
+                onChangeText={(value) => handleInputChange("firstName", value)}
+                style={styles.input}
+                placeholder="First Name"
+              />
+              <TextInput
+                value={editedProfile.lastName}
+                onChangeText={(value) => handleInputChange("lastName", value)}
+                style={styles.input}
+                placeholder="Last Name"
+              />
+              <TextInput
+                value={editedProfile.oldPassword}
+                onChangeText={(value) => handleInputChange("oldPassword", value)}
+                style={styles.input}
+                placeholder="Old Password"
+                secureTextEntry
+              />
+              <TextInput
+                value={editedProfile.newPassword}
+                onChangeText={(value) => handleInputChange("newPassword", value)}
+                style={styles.input}
+                placeholder="New Password"
+                secureTextEntry
+              />
+              <Button title="Save" onPress={handleSaveProfile} />
+            </>
+          ) : (
+            <>
+              <Text style={styles.nameText}>
+                Welcome {user.first_name} {user.last_name}
+              </Text>
+              <Button title="Edit Profile" onPress={handleEditProfile} />
+            </>
+          )}
+        </>
+      )}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  profileContainer: {
+  container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#f8f8f8",
-  },
-  profileInnerContainer: {
-    paddingHorizontal: 25,
     alignItems: "center",
+    padding: 16,
+    backgroundColor: "#f5f5f5",
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
   },
-  profileDetailsContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    alignItems: 'flex-start',
-  },
-  profileDetailLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  profileInput: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 20,
-    width: "100%",
-    backgroundColor: "#fff",
-  },
-  profileTitle: {
-    fontFamily: "Roboto-Medium",
-    fontSize: 28,
-    fontWeight: "500",
+  nameText: {
+    fontSize: 20,
+    fontWeight: "bold",
     color: "#333",
-    marginBottom: 30,
+    marginVertical: 8,
+    fontFamily: "Arial",
   },
-  profileButton: {
-    backgroundColor: "#AD40AF",
-    borderRadius: 10,
-    paddingVertical: 15,
-    width: "100%",
-    alignItems: "center",
-    marginBottom: 20,
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    width: "80%",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    fontFamily: "Arial",
   },
-  profileButtonText: {
+  button: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
     color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
-    fontWeight: "600",
-  },
-  profileLoginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  profileLoginText: {
-    color: "#AD40AF",
-    fontWeight: "700",
   },
 });
 
