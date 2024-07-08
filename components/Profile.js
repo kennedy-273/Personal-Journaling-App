@@ -6,6 +6,16 @@ import {
   Button,
   StyleSheet,
   Image,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -143,8 +153,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
-    backgroundColor: "#f5f5f5",
   },
   profileImage: {
     width: 100,
@@ -152,32 +160,23 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 16,
   },
-  nameText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginVertical: 8,
-    fontFamily: "Arial",
+  profileDetailsContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    alignItems: 'flex-start',
+  },
+  profileDetailLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
+    borderColor: "gray",
     width: "80%",
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    fontFamily: "Arial",
-  },
-  button: {
-    backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
   },
 });
 

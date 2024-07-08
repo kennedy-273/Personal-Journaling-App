@@ -43,7 +43,7 @@ export const JournalProvider = ({ children }) => {
   };
 
   return (
-    <JournalContext.Provider value={{ journals, loading, fetchJournals }}>
+    <JournalContext.Provider value={{ journals, loading, fetchJournals , }}>
       {children}
     </JournalContext.Provider>
   );
