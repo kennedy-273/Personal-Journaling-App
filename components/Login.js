@@ -96,7 +96,7 @@ const Login = ({ navigation }) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="emailadress@gmail.com"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}

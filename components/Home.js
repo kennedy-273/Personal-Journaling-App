@@ -14,9 +14,11 @@ import { JournalContext } from "../context/JournalContext";
 
 const Home = ({ navigation, route }) => {
   const [journalEntries, setJournalEntries] = useState([]);
+  const [filteredEntries, setFilteredEntries] = useState([]);
   const [entryToEdit, setEntryToEdit] = useState(null);
+  const [filter, setFilter] = useState('All'); 
 
-  const handleEdit = async (journal) => {
+  const handleEdit = (journal) => {
     setEntryToEdit(journal);
   };
 
@@ -46,7 +48,6 @@ const Home = ({ navigation, route }) => {
         Alert.alert("Error", "Failed to delete the journal entry");
       } else {
         Alert.alert("Success", "Journal entry deleted successfully");
-        // Remove the deleted journal from state
         setJournalEntries((prevEntries) =>
           prevEntries.filter((entry) => entry.id !== journalId)
         );
@@ -67,6 +68,46 @@ const Home = ({ navigation, route }) => {
     setJournalEntries(journals);
   }, [journals]);
 
+  useEffect(() => {
+    applyFilter(filter);
+  }, [journalEntries, filter]);
+
+  const applyFilter = (filter) => {
+    const now = new Date();
+    let filtered = journalEntries;
+
+    switch (filter) {
+      case 'Today':
+        filtered = filtered.filter((entry) => {
+          const entryDate = new Date(entry.date); 
+          return entryDate.toDateString() === now.toDateString();
+        });
+        break;
+      case 'Week':
+        const startOfWeek = now.getDate() - now.getDay();
+        const endOfWeek = startOfWeek + 6;
+        const startDate = new Date(now.setDate(startOfWeek)).toDateString();
+        const endDate = new Date(now.setDate(endOfWeek)).toDateString();
+        filtered = filtered.filter((entry) => {
+          const entryDate = new Date(entry.date); 
+          return entryDate.toDateString() >= startDate && entryDate.toDateString() <= endDate;
+        });
+        break;
+      case 'Month':
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        filtered = filtered.filter((entry) => {
+          const entryDate = new Date(entry.date); 
+          return entryDate >= startOfMonth && entryDate <= endOfMonth;
+        });
+        break;
+      default:
+        break;
+    }
+
+    setFilteredEntries(filtered);
+  };
+
   if (entryToEdit?.id) {
     return (
       <EditJournal
@@ -79,9 +120,20 @@ const Home = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {journalEntries.length > 0 ? (
+      <View style={styles.filterContainer}>
+        {['All', 'Today', 'Week', 'Month'].map((category) => (
+          <TouchableOpacity
+            key={category}
+            style={[styles.filterButton, filter === category && styles.activeFilter]}
+            onPress={() => setFilter(category)}
+          >
+            <Text style={styles.filterText}>{category}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      {filteredEntries.length > 0 ? (
         <FlatList
-          data={journalEntries}
+          data={filteredEntries}
           renderItem={({ item }) => (
             <View style={styles.card}>
               <Text style={styles.cardTitle}>{item.title}</Text>
@@ -102,7 +154,7 @@ const Home = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.id.toString()} 
           ListFooterComponent={
             loading && <ActivityIndicator size="large" color={colors.primary} />
           }
@@ -125,6 +177,9 @@ const colors = {
   deleteButton: "#E74C3C",
   noEntriesText: "#3E4985",
   primary: "#AD40AF",
+  filterButton: "#D3D3D3", 
+  activeFilter: "#AD40AF", 
+  filterText: "#333333",
 };
 
 const styles = StyleSheet.create({
@@ -132,6 +187,32 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: colors.background,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 5,
+  },
+  filterButton: {
+    flex: 1, 
+    backgroundColor: colors.filterButton,
+    borderRadius: 8,
+    paddingVertical: 10,
+    marginHorizontal: 5, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+  },
+  activeFilter: {
+    backgroundColor: colors.activeFilter,
+  },
+  filterText: {
+    color: colors.filterText,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   card: {
     width: "100%",
@@ -190,5 +271,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 
 export default Home;
