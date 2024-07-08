@@ -91,13 +91,11 @@ const Home = ({ navigation, route }) => {
         });
         break;
       case 'Week':
-        const startOfWeek = now.getDate() - now.getDay();
-        const endOfWeek = startOfWeek + 6;
-        const startDate = new Date(now.setDate(startOfWeek)).toDateString();
-        const endDate = new Date(now.setDate(endOfWeek)).toDateString();
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
         filtered = filtered.filter((entry) => {
           const entryDate = new Date(entry.date); 
-          return entryDate.toDateString() >= startDate && entryDate.toDateString() <= endDate;
+          return entryDate >= startOfWeek && entryDate <= endOfWeek;
         });
         break;
       case 'Month':
