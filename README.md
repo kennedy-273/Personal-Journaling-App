@@ -54,8 +54,43 @@ To get started with the Personal Journaling App, you will need to have Node.js i
     yarn install
 
 
-3. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what you are using.
+4. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what you are using.
 
-### Demo
+5. After login you have default picture now you can change to use yours.
+
+ 
+
+### Demo imges 
+ 1.Signup Page
+
+    file:///home/ken/Pictures/Signup%20page.jpeg
+
+2.Login Page
     
+    file:///home/ken/Pictures/Login.jpeg
+
+3.Home Page
+
+    file:///home/ken/Pictures/Homepage.jpeg
+
+4.New Entry Page
+
+    file:///home/ken/Pictures/New%20entry.jpeg
+
+5.EDit Journal Page
+
+    file:///home/ken/Pictures/EditPage.jpeg
+
+6.Journal Detail Page
+
+    file:///home/ken/Pictures/Journal%20Detail%20page.jpeg
+
+7.Profile Page
+
+    file:///home/ken/Pictures/Profile%20page.jpeg
+
+8.Edit Profile page
+
+    file:///home/ken/Pictures/Edit%20profile%20page.jpeg
+
 
