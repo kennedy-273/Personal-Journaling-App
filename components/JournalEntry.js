@@ -79,7 +79,7 @@ const JournalEntry = ({ navigation }) => {
           placeholderTextColor={colors.placeholder}
         />
 
-        <Text style={styles.label}>Category:</Text>
+        {/* <Text style={styles.label}>Category:</Text>
         <Picker
           selectedValue={newEntryCategory}
           style={styles.picker}
@@ -89,7 +89,15 @@ const JournalEntry = ({ navigation }) => {
           <Picker.Item label="Work" value="Work" />
           <Picker.Item label="Personal" value="Personal" />
           <Picker.Item label="Travel" value="Travel" />
-        </Picker>
+        </Picker> */}
+        <Text style={styles.label}>Category:</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(category) => setNewEntryCategory(category)}
+          value={newEntryCategory}
+          placeholder="Your Category"
+          placeholderTextColor={colors.placeholder}
+        />
       </View>
       <Text style={styles.label}>Journals:</Text>
       <View style={styles.bodyContainer}>
