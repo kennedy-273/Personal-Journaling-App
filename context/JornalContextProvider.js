@@ -36,7 +36,6 @@ export const JournalProvider = ({ children }) => {
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Failed to fetch journal entries");
     } finally {
       setLoading(false);
     }
