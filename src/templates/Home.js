@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import EditJournal from "./EditJournal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { JournalContext } from "../context/JournalContext";
+import { JournalContext } from "../../context/JournalContext";
 
 const Home = ({ navigation }) => {
   const [journalEntries, setJournalEntries] = useState([]);
@@ -114,7 +114,6 @@ const Home = ({ navigation }) => {
     setFilteredEntries(filtered);
   };
 
-  
   const truncateBody = (body, wordLimit = 50) => {
     const words = body.split(" ");
     if (words.length > wordLimit) {

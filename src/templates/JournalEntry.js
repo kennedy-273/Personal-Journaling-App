@@ -10,8 +10,9 @@ import {
   StyleSheet,
 } from "react-native";
 import { Button } from "react-native-elements";
+import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { JournalContext } from "../context/JournalContext";
+import { JournalContext } from "../../context/JournalContext";
 
 const JournalEntry = ({ navigation }) => {
   const [previewModal, setPreviewModal] = useState(false);
@@ -19,7 +20,6 @@ const JournalEntry = ({ navigation }) => {
   const [newEntryTitle, setNewEntryTitle] = useState("");
   const [newEntryCategory, setNewEntryCategory] = useState("");
   const [newEntryBody, setNewEntryBody] = useState("");
-  const [newEntryDate, setNewEntryDate] = useState("");
 
   const { fetchJournals } = useContext(JournalContext);
 
@@ -28,7 +28,6 @@ const JournalEntry = ({ navigation }) => {
       title: newEntryTitle,
       category: newEntryCategory,
       body: newEntryBody,
-      date: newEntryDate, // Include date in the entry object
     };
 
     try {
@@ -62,7 +61,6 @@ const JournalEntry = ({ navigation }) => {
     setNewEntryTitle("");
     setNewEntryCategory("");
     setNewEntryBody("");
-    setNewEntryDate("");
     setPreviewModal(false);
   }
 
@@ -80,23 +78,16 @@ const JournalEntry = ({ navigation }) => {
         />
 
         <Text style={styles.label}>Category:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(category) => setNewEntryCategory(category)}
-          value={newEntryCategory}
-          placeholder="Your Category"
-          placeholderTextColor={colors.placeholder}
-        />
-
-        <Text style={styles.label}>Date:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(date) => setNewEntryDate(date)}
-          value={newEntryDate}
-          placeholder="YYYY-MM-DD"
-          keyboardType="numeric"
-          placeholderTextColor={colors.placeholder}
-        />
+        <Picker
+          selectedValue={newEntryCategory}
+          style={styles.picker}
+          onValueChange={(itemValue) => setNewEntryCategory(itemValue)}
+        >
+          <Picker.Item label="Select Category..." value="" />
+          <Picker.Item label="Work" value="Work" />
+          <Picker.Item label="Personal" value="Personal" />
+          <Picker.Item label="Travel" value="Travel" />
+        </Picker>
       </View>
 
       <Text style={styles.label}>Journal:</Text>
@@ -189,6 +180,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
+  picker: {
+    backgroundColor: colors.inputBackground,
+    color: colors.text,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
   bodyContainer: {
     marginBottom: 10,
   },
@@ -199,7 +196,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 16,
     borderRadius: 5,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     height: 120,
   },
   logButton: {

@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
     color: colors.title,
     marginBottom: 20,
     paddingBottom: 10,
-    fontFamily: 'serif', // Serif font for a traditional reading feel
+    fontFamily: 'serif', 
   },
   body: {
     fontSize: 18,
     color: colors.body,
     marginBottom: 20,
-    lineHeight: 30,      // Increased line height for better readability
-    fontFamily: 'serif', // Serif font for body text as well
+    lineHeight: 30,     
+    fontFamily: 'serif', 
   },
   category: {
     fontSize: 26,

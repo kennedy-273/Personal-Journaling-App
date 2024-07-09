@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check authentication status when the app starts
     const checkAuthStatus = async () => {
-      const token = await SecureStore.getItemAsync('access_token');
+      const token = await SecureStore.getItemAsync('token');
       if (token) {
         setIsAuthenticated(true);
       }
@@ -21,12 +21,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (token) => {
-    await SecureStore.setItemAsync('access_token', token);
+    await SecureStore.setItemAsync('token', token);
     setIsAuthenticated(true);
   };
 
   const logout = async () => {
-    await SecureStore.deleteItemAsync('access_token');
+    await SecureStore.deleteItemAsync('token');
     setIsAuthenticated(false);
   };
 

@@ -25,12 +25,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
 import HomeNavigator from "./HomeNavigator";
-import JournalEntry from "./components/JournalEntry";
-import Login from "./components/Login";
-import Profile from "./components/Profile";
-import SignOut from "./components/SignOut";
+import JournalEntry from "./src/templates/JournalEntry";
+import Login from "./src/templates/Login";
+import Profile from "./src/templates/Profile";
 import { JournalProvider } from "./context/JornalContextProvider";
-import JournalDetails from "./components/JournalDetails";
+import JournalDetails from "./src/templates/JournalDetails";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -41,6 +40,7 @@ const LogoutButton = () => {
   const handleSignOut = async () => {
     try {
       await AsyncStorage.removeItem("token");
+      console.log("Token removed");
       navigation.navigate("Login");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -95,8 +95,6 @@ const App = () => {
   useAnton({
     Anton_400Regular,
   });
-
-  
 
   return (
     <JournalProvider>

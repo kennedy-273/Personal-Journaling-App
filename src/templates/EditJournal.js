@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
@@ -66,35 +67,88 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.editContainer}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Title:</Text>
+        <TextInput
+          style={styles.input}
+          autoCapitalize="words"
+          value={currentEntry?.title}
+          onChangeText={(text) => handleChange("title", text)}
+        />
+
+        <Text style={styles.label}>Category:</Text>
+        <Picker
+          selectedValue={currentEntry.category}
+          onValueChange={(itemValue, itemIndex) =>
+            handleChange("category", itemValue)
+          }
+          style={styles.picker}
+        >
+          <Picker.Item label="Select Category..." value="" />
+          <Picker.Item label="Work" value="Work" />
+          <Picker.Item label="Personal" value="Personal" />
+          <Picker.Item label="Travel" value="Travel" />
+        </Picker>
+      </View>
+
+      <Text style={styles.label}>Journal:</Text>
+      <View style={styles.bodyContainer}>
+        <TextInput
+          style={styles.textarea}
+          multiline
+          numberOfLines={10}
+          placeholderTextColor={colors.placeholder}
+          value={currentEntry.body}
+          onChangeText={(text) => handleChange("body", text)}
+        />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.primaryButton} onPress={handleUpdate}>
+          <Text style={styles.buttonText}>Update</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={handleOnCancel}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+      {/* <View style={styles.editContainer}>
+        <Text style={styles.label}>Title:</Text>
         <TextInput
           style={styles.input}
           value={currentEntry?.title}
+          autoCapitalize="words"
           onChangeText={(text) => handleChange("title", text)}
-          placeholder="Title"
         />
+
+        <Text style={styles.label}>Category:</Text>
         <TextInput
           style={styles.input}
           value={currentEntry.body}
-          onChangeText={(text) => handleChange("body", text)}
-          placeholder="Body"
+          onChangeText={(text) => handleChange("category", text)}
           multiline
         />
+
+        <Text style={styles.label}>Journal:</Text>
         <TextInput
           style={styles.input}
           value={currentEntry.category}
-          onChangeText={(text) => handleChange("category", text)}
-          placeholder="Body"
+          onChangeText={(text) => handleChange("body", text)}
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.primaryButton} onPress={handleUpdate}>
             <Text style={styles.buttonText}>Update</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton} onPress={handleOnCancel}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={handleOnCancel}
+          >
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
     </ScrollView>
   );
 };
@@ -102,8 +156,11 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
 const colors = {
   background: "#F5F5F5",
   inputBorder: "#CCCCCC",
-  primaryButton: "#AD40AF", // Same color as "Add Journal" button
-  secondaryButton: "#E74C3C", // Different color for Cancel button
+  primaryButton: "#AD40AF",
+  secondaryButton: "#E74C3C",
+  primary: "#AD40AF",
+  secondary: "#03DAC6",
+  inputBackground: "#FFFFFF",
   buttonText: "#FFFFFF",
   text: "#333333",
 };
@@ -115,39 +172,46 @@ const fonts = {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flexGrow: 1,
+    padding: 16,
     backgroundColor: colors.background,
   },
-  noEntriesContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
+  inputContainer: {
+    marginBottom: 20,
   },
-  noEntriesText: {
-    fontSize: 18,
+  label: {
     fontFamily: fonts.bold,
     color: colors.text,
-  },
-  createEntryText: {
-    fontSize: 16,
-    fontFamily: fonts.regular,
-    color: colors.text,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  editContainer: {
-    padding: 20,
-    backgroundColor: colors.background,
+    marginBottom: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
+    backgroundColor: colors.inputBackground,
+    width: "100%",
+    height: 46,
+    paddingHorizontal: 10,
+    color: colors.text,
     fontFamily: fonts.regular,
     fontSize: 16,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  picker: {
+    backgroundColor: colors.inputBackground,
+    color: colors.text,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  bodyContainer: {
+    marginBottom: 10,
+  },
+  textarea: {
+    backgroundColor: colors.inputBackground,
+    padding: 10,
+    color: colors.text,
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    borderRadius: 5,
+    textAlignVertical: "top",
+    height: 120,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -177,7 +241,6 @@ const styles = StyleSheet.create({
 });
 
 export default EditJournal;
-
 
 /**
  * Use navigatest to Home, they see all journals with Edit and delete buttons

@@ -29,7 +29,6 @@ export const JournalProvider = ({ children }) => {
 
       if (response.status !== 200) {
         console.log("Failed to fetch journal entries", response.status);
-        Alert.alert("Error", "Failed to fetch journal entries");
       } else {
         const journalsResponse = await response.json();
         setJournals(journalsResponse);
