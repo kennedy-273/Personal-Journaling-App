@@ -16,7 +16,7 @@ const Home = ({ navigation }) => {
   const [journalEntries, setJournalEntries] = useState([]);
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [entryToEdit, setEntryToEdit] = useState(null);
-  const [filter, setFilter] = useState("Today");
+  const [filter, setFilter] = useState("All");
 
   const handleEdit = (journal) => {
     setEntryToEdit(journal);
@@ -114,26 +114,21 @@ const Home = ({ navigation }) => {
     setFilteredEntries(filtered);
   };
 
+  
+  const truncateBody = (body, wordLimit = 50) => {
+    const words = body.split(" ");
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(" ") + "...";
+    }
+    return body;
+  };
+
   const handlePressJournal = (journal) => {
     navigation.navigate("JournalDetails", {
       title: journal.title,
       body: journal.body,
       category: journal.category,
     });
-  };
-
-  const formatDate = (date) => {
-    const now = new Date();
-    const entryDate = new Date(date);
-    const timeDiff = now - entryDate;
-
-    if (entryDate.toDateString() === now.toDateString()) {
-      return `Today at ${entryDate.toLocaleTimeString()}`;
-    } else if (timeDiff < 7 * 24 * 60 * 60 * 1000) {
-      return `${entryDate.toLocaleDateString()} at ${entryDate.toLocaleTimeString()}`;
-    } else {
-      return entryDate.toLocaleDateString();
-    }
   };
 
   if (entryToEdit?.id) {
@@ -173,8 +168,7 @@ const Home = ({ navigation }) => {
               onPress={() => handlePressJournal(item)}
             >
               <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardBody}>{item.body}</Text>
-              <Text style={styles.cardDate}>{formatDate(item.date)}</Text>
+              <Text style={styles.cardBody}>{truncateBody(item.body)}</Text>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.editButton}
@@ -206,7 +200,6 @@ const colors = {
   cardShadow: "#000000",
   cardTitle: "#333333",
   cardBody: "#666666",
-  cardDate: "#999999",
   buttonText: "#FFFFFF",
   editButton: "#AD40AF",
   deleteButton: "#E74C3C",
@@ -274,11 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.cardBody,
     lineHeight: 24,
-  },
-  cardDate: {
-    marginTop: 8,
-    fontSize: 14,
-    color: colors.cardDate,
   },
   buttonContainer: {
     flexDirection: "row",

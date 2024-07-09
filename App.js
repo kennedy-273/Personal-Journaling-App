@@ -96,18 +96,7 @@ const App = () => {
     Anton_400Regular,
   });
 
-  useBioRhyme({
-    BioRhyme_400Regular,
-  });
-
-  useSpaceMono({
-    SpaceMono_400Regular,
-    SpaceMono_400Regular_Italic,
-  });
-
-  useBigShoulders({
-    BigShouldersDisplay_700Bold,
-  });
+  
 
   return (
     <JournalProvider>

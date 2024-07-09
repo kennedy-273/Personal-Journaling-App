@@ -6,12 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image, // Import Image component
+  Image,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Default profile image URL
 const defaultProfileImageUrl = "https://cdn.pixabay.com/photo/2019/01/14/10/23/glass-ball-3931999_640.jpg";
 
 const Login = ({ navigation }) => {
@@ -19,7 +18,7 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoginMode, setIsLoginMode] = useState(false); 
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -43,7 +42,7 @@ const Login = ({ navigation }) => {
         }
       );
       await AsyncStorage.setItem("token", response.data.access_token);
-      navigation.navigate("Home");
+      navigation.navigate("Main");
     } catch (error) {
       setError("Login failed. Please check your credentials.");
       handleError(error);
@@ -86,7 +85,6 @@ const Login = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        {/* Display default image */}
         <Image source={{ uri: defaultProfileImageUrl }} style={styles.profileImage} />
 
         <Text style={styles.title}>{isLoginMode ? "Login" : "Sign Up"}</Text>

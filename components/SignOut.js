@@ -1,45 +1,42 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const SignOut = () => {
+const LogoutButton = () => {
   const navigation = useNavigation();
 
   const handleSignOut = async () => {
     try {
-      // Clear the authentication token from AsyncStorage
-      await AsyncStorage.removeItem('authToken');
-      console.log('Token removed from AsyncStorage');
-
-      // Navigate to the Login screen
-      navigation.navigate('Login');
+      await AsyncStorage.removeItem("token");
+      navigation.navigate("Login");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
   return (
-    <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-      <Text style={styles.signOutText}>Logout</Text>
-    </TouchableOpacity>
+    <View style={styles.logoutContainer}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  signOutButton: {
-    backgroundColor: '#FF449F', // Customize the color
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginLeft: 10,
+  logoutContainer: {
+    marginRight: 10,
   },
-  signOutText: {
-    color: '#FFF', // Customize the text color
-    fontFamily: 'Anton_400Regular',
+  logoutButton: {
+    backgroundColor: 'transparent', // Set to transparent to avoid background color
+    padding: 10,
+    borderRadius: 5,
+  },
+  logoutText: {
+    color: '#FFFFFF', // White text color
     fontSize: 16,
-    textTransform: 'uppercase',
+    fontWeight: 'bold',
   },
 });
 
-export default SignOut;
+export default LogoutButton;
