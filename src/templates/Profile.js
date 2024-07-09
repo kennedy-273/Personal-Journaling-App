@@ -19,7 +19,7 @@ const Profile = () => {
     lastName: "",
     oldPassword: "",
     newPassword: "",
-    image: null,
+    image: "",
   });
 
   useEffect(() => {
@@ -41,12 +41,15 @@ const Profile = () => {
   const fetchUserProfile = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch("https://journal-backend-x445.onrender.com/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://journal-backend-x445.onrender.com/user",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       setUser(data);
       setEditMode(false);
@@ -55,44 +58,65 @@ const Profile = () => {
     }
   };
 
+  const renderUserImageSource = () => {
+    if (!user || !user.image || user.image.trim() === "") {
+      return require("../images/default.png");
+    } else {
+      return { uri: user.image };
+    }
+  };
+
   const handleEditProfile = () => setEditMode(true);
 
   const handleSaveProfile = async () => {
-    if (editedProfile.oldPassword === "" || editedProfile.newPassword === "") {
-      Alert.alert("Please enter your old and new passwords.");
-      return;
-    }
-
     try {
       const token = await AsyncStorage.getItem("token");
       const formData = new FormData();
       formData.append("first_name", editedProfile.firstName);
       formData.append("last_name", editedProfile.lastName);
-      formData.append("old_password", editedProfile.oldPassword);
-      formData.append("new_password", editedProfile.newPassword);
-      
+
+      if (editedProfile.oldPassword && editedProfile.newPassword) {
+        formData.append("old_password", editedProfile.oldPassword);
+        formData.append("new_password", editedProfile.newPassword);
+      }
+
       if (editedProfile.image) {
+        const uri = editedProfile.image;
+        const uriParts = uri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+
+        const response = await fetch(uri);
+        const blob = await response.blob();
+
         formData.append("image", {
-          uri: editedProfile.image,
-          type: "image/jpeg",
-          name: "profile.jpg",
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
         });
       }
 
-      const response = await fetch("https://journal-backend-x445.onrender.com/user", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "https://journal-backend-x445.onrender.com/user",
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
 
       const data = await response.json();
       setUser(data);
       setEditMode(false);
+      Alert.alert("Profile updated successfully");
     } catch (error) {
       console.error("Error saving profile:", error);
+      Alert.alert("Error updating profile. Please try again.");
     }
   };
 
@@ -128,10 +152,16 @@ const Profile = () => {
     <View style={styles.container}>
       {user && (
         <>
-          <Image source={{ uri: editedProfile.image }} style={styles.profileImage} />
+          <Image
+            source={renderUserImageSource()}
+            style={styles.profileImage}
+          />
           {editMode ? (
             <View style={styles.editContainer}>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
+              <TouchableOpacity
+                onPress={pickImage}
+                style={styles.imagePickerButton}
+              >
                 <Text style={styles.imagePickerButtonText}>Change Picture</Text>
               </TouchableOpacity>
               <TextInput
@@ -148,16 +178,20 @@ const Profile = () => {
               />
               <TextInput
                 value={editedProfile.oldPassword}
-                onChangeText={(value) => handleInputChange("oldPassword", value)}
+                onChangeText={(value) =>
+                  handleInputChange("oldPassword", value)
+                }
                 style={styles.input}
-                placeholder="Old Password"
+                placeholder="Enter Old Password"
                 secureTextEntry
               />
               <TextInput
                 value={editedProfile.newPassword}
-                onChangeText={(value) => handleInputChange("newPassword", value)}
+                onChangeText={(value) =>
+                  handleInputChange("newPassword", value)
+                }
                 style={styles.input}
-                placeholder="New Password"
+                placeholder="Enter New Password"
                 secureTextEntry
               />
               <View style={styles.buttonContainer}>
@@ -228,27 +262,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "80%",
     marginTop: 20,
   },
   saveButton: {
-    backgroundColor: '#AD40AF', 
+    backgroundColor: "#AD40AF",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 5,
     alignItems: "center",
     flex: 1,
-    marginRight: 10, 
+    marginRight: 10,
   },
   saveButtonText: {
-    color: "#FFFFFF", 
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
   },
   cancelButton: {
-    backgroundColor: '#1DACD6', 
+    backgroundColor: "#1DACD6",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 5,
@@ -256,25 +290,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cancelButtonText: {
-    color: "#FFFFFF", 
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
   },
   editButton: {
-    backgroundColor: "#AD40AF", 
+    backgroundColor: "#AD40AF",
+    paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 5,
-    marginTop: 20,
+    marginTop: 5,
     width: "80%",
     alignItems: "center",
   },
   editButtonText: {
-    color: "pink",
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },
   imagePickerButton: {
-    backgroundColor: "#AD40AF", 
+    backgroundColor: "#AD40AF",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
