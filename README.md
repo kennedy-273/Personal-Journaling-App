@@ -41,14 +41,21 @@ The goal of this project is to develop a mobile application complemented by a ba
 
 To get started with the Personal Journaling App, you will need to have Node.js installed on your machine. Then, you can follow these steps:
 
-1. Clone the repository to your local machine.
-2. Navigate to the project directory and install the dependencies using `npm install` or `yarn install`.
-3. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what work best for tou.
+1. Clone the repository to your local machine: https://github.com/kennedy-273/Personal-Journaling-App.git
 
-## Contributing
+2. Navigate to the project directory:
 
-Contributions to the Personal Journaling App are welcome! Please feel free to submit pull requests or open issues to discuss potential improvements or features.
+    cd Personal-Journaling-App
 
-## License
+3. install the dependencies using:
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+    npm install
+        or
+    yarn install
+
+
+3. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what you are using.
+
+### Demo
+    
+
