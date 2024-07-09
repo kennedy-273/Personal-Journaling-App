@@ -9,8 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { Icon, Button } from "react-native-elements";
-import { Picker } from "@react-native-picker/picker";
+import { Button } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { JournalContext } from "../context/JournalContext";
 
@@ -20,6 +19,7 @@ const JournalEntry = ({ navigation }) => {
   const [newEntryTitle, setNewEntryTitle] = useState("");
   const [newEntryCategory, setNewEntryCategory] = useState("");
   const [newEntryBody, setNewEntryBody] = useState("");
+  const [newEntryDate, setNewEntryDate] = useState("");
 
   const { fetchJournals } = useContext(JournalContext);
 
@@ -28,10 +28,8 @@ const JournalEntry = ({ navigation }) => {
       title: newEntryTitle,
       category: newEntryCategory,
       body: newEntryBody,
+      date: newEntryDate, // Include date in the entry object
     };
-
-    let allEntries = newEntryData.concat(entry);
-    setNewEntryData(allEntries);
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -58,11 +56,13 @@ const JournalEntry = ({ navigation }) => {
       console.error(error);
       Alert.alert("Error", "Failed to save entry to backend");
     }
-    navigation.navigate("Home", { allEntries });
+
+    navigation.navigate("Home", { allEntries: newEntryData });
 
     setNewEntryTitle("");
     setNewEntryCategory("");
     setNewEntryBody("");
+    setNewEntryDate("");
     setPreviewModal(false);
   }
 
@@ -79,17 +79,6 @@ const JournalEntry = ({ navigation }) => {
           placeholderTextColor={colors.placeholder}
         />
 
-        {/* <Text style={styles.label}>Category:</Text>
-        <Picker
-          selectedValue={newEntryCategory}
-          style={styles.picker}
-          onValueChange={(itemValue) => setNewEntryCategory(itemValue)}
-        >
-          <Picker.Item label="Select Category..." value="" />
-          <Picker.Item label="Work" value="Work" />
-          <Picker.Item label="Personal" value="Personal" />
-          <Picker.Item label="Travel" value="Travel" />
-        </Picker> */}
         <Text style={styles.label}>Category:</Text>
         <TextInput
           style={styles.input}
@@ -98,8 +87,19 @@ const JournalEntry = ({ navigation }) => {
           placeholder="Your Category"
           placeholderTextColor={colors.placeholder}
         />
+
+        <Text style={styles.label}>Date:</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(date) => setNewEntryDate(date)}
+          value={newEntryDate}
+          placeholder="YYYY-MM-DD"
+          keyboardType="numeric"
+          placeholderTextColor={colors.placeholder}
+        />
       </View>
-      <Text style={styles.label}>Journals:</Text>
+
+      <Text style={styles.label}>Journal:</Text>
       <View style={styles.bodyContainer}>
         <TextInput
           style={styles.textarea}
@@ -124,13 +124,12 @@ const JournalEntry = ({ navigation }) => {
         animationType="fade"
         transparent={true}
         visible={previewModal}
-        onRequestClose={() => setPreviewModal(!previewModal)}
+        onRequestClose={() => setPreviewModal(false)}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalTitle}>Submit Your Journal Entry</Text>
             <View style={styles.modalButtonRow}>
-
               <Button
                 title="Cancel"
                 buttonStyle={styles.cancelButton}
@@ -190,12 +189,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
-  picker: {
-    backgroundColor: colors.inputBackground,
-    color: colors.text,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
   bodyContainer: {
     marginBottom: 10,
   },
@@ -208,7 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlignVertical: 'top',
     height: 120,
-    
   },
   logButton: {
     backgroundColor: colors.primary,
