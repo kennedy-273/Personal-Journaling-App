@@ -56,7 +56,7 @@ To get started with the Personal Journaling App, you will need to have Node.js i
 
 4. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what you are using.
 
-5. After login you have default picture now you can change to use yours.
+5. After login you have the default picture now you can change to use yours.
 
  
 
@@ -64,7 +64,8 @@ To get started with the Personal Journaling App, you will need to have Node.js i
 
 ### Signup Page
 
-![Signup Page](file:///home/ken/Pictures/Signup%20page.jpeg "Signup Page")
+![Signup page](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/c7f33118-79a7-41c5-a64a-46517b70957d)
+
 
 ### Login Page
 
