@@ -24,11 +24,11 @@ const JournalDetails = ({ route }) => {
 
 
 const colors = {
-  background: "#fff", // Subtle off-white background for a more book-like feel
-  title: "#2C2C2C",      // Darker color for the title
-  body: "#4E4E4E",       // Dark color for body text
-  category: "#7B4B94",   // Accent color for the category
-  headerFooter: "#AD40AF", // Pink color for header and footer
+  background: "#fff", 
+  title: "#2C2C2C", 
+  body: "#4E4E4E", 
+  category: "#7B4B94",
+  headerFooter: "#AD40AF",
 };
 
 const styles = StyleSheet.create({

@@ -54,7 +54,6 @@ const Profile = () => {
       setUser(data);
       setEditMode(false);
     } catch (error) {
-      console.error("Error fetching profile:", error);
     }
   };
 
@@ -115,7 +114,6 @@ const Profile = () => {
       setEditMode(false);
       Alert.alert("Profile updated successfully");
     } catch (error) {
-      console.error("Error saving profile:", error);
       Alert.alert("Error updating profile. Please try again.");
     }
   };

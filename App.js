@@ -40,10 +40,8 @@ const LogoutButton = () => {
   const handleSignOut = async () => {
     try {
       await AsyncStorage.removeItem("token");
-      console.log("Token removed");
       navigation.navigate("Login");
     } catch (error) {
-      console.error("Error signing out:", error);
     }
   };
 

@@ -52,7 +52,6 @@ const JournalEntry = ({ navigation }) => {
         fetchJournals();
       }
     } catch (error) {
-      console.error(error);
       Alert.alert("Error", "Failed to save entry to backend");
     }
 

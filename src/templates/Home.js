@@ -14,10 +14,8 @@ import { JournalContext } from "../../context/JournalContext";
 
 const Home = ({ navigation }) => {
   const [journalEntries, setJournalEntries] = useState([]);
-  const [filteredEntries, setFilteredEntries] = useState([]);
   const [entryToEdit, setEntryToEdit] = useState(null);
   const [filter, setFilter] = useState("All");
-
   const handleEdit = (journal) => {
     setEntryToEdit(journal);
   };
@@ -53,7 +51,6 @@ const Home = ({ navigation }) => {
         );
       }
     } catch (error) {
-      console.error(error);
       Alert.alert("Error", "Failed to delete the journal entry");
     }
   };
@@ -62,57 +59,20 @@ const Home = ({ navigation }) => {
     setEntryToEdit(null);
   };
 
-  const { loading, journals, error } = useContext(JournalContext);
+  const { loading, journals, error, fetchJournals } =
+    useContext(JournalContext);
 
   useEffect(() => {
     if (error) {
       Alert.alert("Error", "Failed to fetch journal entries");
-      console.error("Error fetching journal entries:", error);
     } else {
       setJournalEntries(journals);
     }
   }, [journals, error]);
 
   useEffect(() => {
-    if (journalEntries) {
-      applyFilter(filter);
-    }
-  }, [journalEntries, filter]);
-
-  const applyFilter = (filter) => {
-    const now = new Date();
-    let filtered = journalEntries;
-
-    switch (filter) {
-      case "Today":
-        filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date);
-          return entryDate.toDateString() === now.toDateString();
-        });
-        break;
-      case "Week":
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-        const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
-        filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date);
-          return entryDate >= startOfWeek && entryDate <= endOfWeek;
-        });
-        break;
-      case "Month":
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        filtered = filtered.filter((entry) => {
-          const entryDate = new Date(entry.date);
-          return entryDate >= startOfMonth && entryDate <= endOfMonth;
-        });
-        break;
-      default:
-        filtered = journalEntries;
-        break;
-    }
-
-    setFilteredEntries(filtered);
-  };
+    fetchJournals(filter.toLowerCase());
+  }, [filter]);
 
   const truncateBody = (body, wordLimit = 50) => {
     const words = body.split(" ");
@@ -121,6 +81,7 @@ const Home = ({ navigation }) => {
     }
     return body;
   };
+
 
   const handlePressJournal = (journal) => {
     navigation.navigate("JournalDetails", {
@@ -158,9 +119,9 @@ const Home = ({ navigation }) => {
       </View>
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
-      ) : filteredEntries && filteredEntries.length > 0 ? (
+      ) : journalEntries && journalEntries.length > 0 ? (
         <FlatList
-          data={filteredEntries}
+          data={journalEntries}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.card}

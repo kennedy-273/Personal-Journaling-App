@@ -44,7 +44,6 @@ const SubmittedEntry = ({ route }) => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error("Token not found");
         return;
       }
 
@@ -66,7 +65,6 @@ const SubmittedEntry = ({ route }) => {
         Alert.alert("Journal Entry deleted successfully");
       }
     } catch (error) {
-      console.error("Error deleting entry:", error);
       Alert.alert("Error", "Failed to delete entry");
     }
   };
@@ -75,7 +73,6 @@ const SubmittedEntry = ({ route }) => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error("Token not found");
         return;
       }
       const response = await fetch(
@@ -104,7 +101,6 @@ const SubmittedEntry = ({ route }) => {
         Alert.alert("Success", "Entry updated successfully");
       }
     } catch (error) {
-      console.error("Error updating entry:", error);
       Alert.alert("Error", "Failed to update entry");
     }
   };
@@ -118,7 +114,6 @@ const SubmittedEntry = ({ route }) => {
     (a, b) => new Date(b.created_at) - new Date(a.created_at)
   );
 
-  console.log(">>>>", isEditing, currentEntry);
   const submittedEntries = sortedEntries.map((entry) => (
     <View key={entry.id} style={styles.entryContainer}>
       <Pressable

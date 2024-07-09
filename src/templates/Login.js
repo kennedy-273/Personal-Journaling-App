@@ -73,7 +73,6 @@ const Login = ({ navigation }) => {
     } else if (error.request) {
     } else {
     }
-    console.log(error.config);
   };
 
   const toggleMode = () => {

@@ -26,18 +26,13 @@ const Signup = ({ navigation }) => {
           password,
         }
       );
-      console.log(response);
       // Redirect to Home screen after successful signup
       navigation.navigate("Home");
     } catch (error) {
       if (error.response) {
-        // console.log(">>>>", error.response.data);
       } else if (error.request) {
-        // console.log(">>>> Request made, no response:", error.request);
       } else {
-        // console.log(">>>> Error", error.message);
       }
-      console.log(error.config);
     }
   };
 

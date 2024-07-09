@@ -37,7 +37,6 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error("Token not found");
         return;
       }
       const response = await fetch(
@@ -60,7 +59,6 @@ const EditJournal = ({ entry, handleOnCancel, updateEntry }) => {
         handleOnCancel();
       }
     } catch (error) {
-      console.error("Error updating entry:", error);
       Alert.alert("Error", "Failed to update entry");
     }
   };

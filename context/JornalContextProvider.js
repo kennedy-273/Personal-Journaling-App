@@ -10,14 +10,14 @@ export const JournalProvider = ({ children }) => {
     fetchJournals();
   }, []);
 
-  const fetchJournals = async () => {
+  const fetchJournals = async (filter='all') => {
     if (loading) return;
     setLoading(true);
 
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(
-        "https://journal-backend-x445.onrender.com/journals",
+        `https://journal-backend-x445.onrender.com/journals/${filter}`,
         {
           method: "GET",
           headers: {
@@ -28,13 +28,11 @@ export const JournalProvider = ({ children }) => {
       );
 
       if (response.status !== 200) {
-        console.log("Failed to fetch journal entries", response.status);
       } else {
         const journalsResponse = await response.json();
-        setJournals(journalsResponse);
+        setJournals(journalsResponse.journals);
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
