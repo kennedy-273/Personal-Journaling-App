@@ -19,7 +19,7 @@ The goal of this project is to develop a mobile application complemented by a ba
 ##### Journal Entry Management
 
 - Users can add new journal entries with a title, content, category, and date.
-- Users have the ability to edit and delete existing entries.
+- Users can edit and delete existing entries.
 
 ##### Journal View
 
@@ -54,7 +54,7 @@ To get started with the Personal Journaling App, you will need to have Node.js i
     yarn install
 
 
-4. If you're using `expo`, start the project by running `expo start`, or  `npm start ` or `yarn start` depends on what you are using.
+4. If you're using `expo`, start the project by running `expo start`, `npm start `, or `yarn start` depending on what you are using.
 
 5. After login you have the default picture now you can change to use yours.
 
@@ -68,29 +68,31 @@ To get started with the Personal Journaling App, you will need to have Node.js i
 
 
 ### Login Page
+![Login](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/1791cfb3-0a70-47e8-b770-41f75045b8b3)
 
-![Login Page](file:///home/ken/Pictures/Login.jpeg "Login Page")
 
 ### Home Page
+![Homepage](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/2c1bfebc-4c22-4ffe-8d41-3f3f00e5a067)
 
-![Home Page](file:///home/ken/Pictures/Homepage.jpeg "Home Page")
 
 ### New Entry Page
+![New entry](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/69319dc6-41d6-43a4-b9bf-3f1eab19ac13)
 
-![New Entry Page](file:///home/ken/Pictures/New%20entry.jpeg "New Entry Page")
 
-### Edit Journal Page
+### Edit Page
+file:///home/ken/Pictures/EditPage.jpeg
 
-![Edit Journal Page](file:///home/ken/Pictures/EditPage.jpeg "Edit Journal Page")
 
-### Journal Detail Page
+### Journal Detail Pag
 
-![Journal Detail Page](file:///home/ken/Pictures/Journal%20Detail%20page.jpeg "Journal Detail Page")
+![Journal Detail page](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/48229cf5-4d15-4709-8136-dd68d1fec0c6)
+
+
 
 ### Profile Page
+![Profile page](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/b3440941-1ee0-44ba-8ff0-f56566eab269)
 
-![Profile Page](file:///home/ken/Pictures/Profile%20page.jpeg "Profile Page")
 
 ### Edit Profile Page
+![Edit profile page](https://github.com/kennedy-273/Personal-Journaling-App/assets/92169187/25c568af-4f62-4755-b124-3891f932e1b6)
 
-![Edit Profile Page](file:///home/ken/Pictures/Edit%20profile%20page.jpeg "Edit Profile Page")
