@@ -60,37 +60,36 @@ To get started with the Personal Journaling App, you will need to have Node.js i
 
  
 
-### Demo imges 
- 1.Signup Page
+### Demo  Screenshots image
 
-    file:///home/ken/Pictures/Signup%20page.jpeg
+### Signup Page
 
-2.Login Page
-    
-    file:///home/ken/Pictures/Login.jpeg
+![Signup Page](file:///home/ken/Pictures/Signup%20page.jpeg "Signup Page")
 
-3.Home Page
+### Login Page
 
-    file:///home/ken/Pictures/Homepage.jpeg
+![Login Page](file:///home/ken/Pictures/Login.jpeg "Login Page")
 
-4.New Entry Page
+### Home Page
 
-    file:///home/ken/Pictures/New%20entry.jpeg
+![Home Page](file:///home/ken/Pictures/Homepage.jpeg "Home Page")
 
-5.EDit Journal Page
+### New Entry Page
 
-    file:///home/ken/Pictures/EditPage.jpeg
+![New Entry Page](file:///home/ken/Pictures/New%20entry.jpeg "New Entry Page")
 
-6.Journal Detail Page
+### Edit Journal Page
 
-    file:///home/ken/Pictures/Journal%20Detail%20page.jpeg
+![Edit Journal Page](file:///home/ken/Pictures/EditPage.jpeg "Edit Journal Page")
 
-7.Profile Page
+### Journal Detail Page
 
-    file:///home/ken/Pictures/Profile%20page.jpeg
+![Journal Detail Page](file:///home/ken/Pictures/Journal%20Detail%20page.jpeg "Journal Detail Page")
 
-8.Edit Profile page
+### Profile Page
 
-    file:///home/ken/Pictures/Edit%20profile%20page.jpeg
+![Profile Page](file:///home/ken/Pictures/Profile%20page.jpeg "Profile Page")
 
+### Edit Profile Page
 
+![Edit Profile Page](file:///home/ken/Pictures/Edit%20profile%20page.jpeg "Edit Profile Page")
