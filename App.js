@@ -81,10 +81,8 @@ const TabNavigator = () => (
       tabBarStyle: { height: 80, backgroundColor: colors.midnightBlue },
       tabBarActiveTintColor: colors.mint,
       tabBarLabelStyle: { fontFamily: fonts.BioRhyme, paddingBottom: 7 },
-      tabBarInactiveTintColor: "#FFF",
-      headerRight: () => <LogoutButton />,
-    })}
-  >
+      tabBarInactiveTintColor: "#FFF",headerRight: () => <LogoutButton />,})}>
+
     <Tab.Screen name="Home" component={HomeNavigator} />
     <Tab.Screen name="New Entry" component={JournalEntry} />
     <Tab.Screen name="Profile" component={Profile} />
@@ -101,8 +99,8 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Main" component={TabNavigator} />
           <Stack.Screen name="JournalDetails" component={JournalDetails} />
+          <Stack.Screen name="Main" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </JournalProvider>
